@@ -19,12 +19,14 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 
 import logic.ProofState;
 
-public class GamePanel extends JPanel {
+public class ReplayPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
@@ -37,14 +39,14 @@ public class GamePanel extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-	public GamePanel(MainWindow mainWindow, String proofString) {
+	public ReplayPanel(MainWindow mainWindow, String proofString) {
 		this.mainWindow = mainWindow;
 		this.mainFrame = mainWindow.getMainFrame();
 		this.proofString = proofString;
 
 		// TODO: Get rid of this when finished testing
 		// ------ TEST
-		if (proofString.length() > 0) {
+		if (proofString != null) {
 			ProofState ps = null;
 			try {
 				ps = new ProofState(proofString);
@@ -69,10 +71,10 @@ public class GamePanel extends JPanel {
 		JPanel topPanel = new JPanel();
 		add(topPanel, BorderLayout.NORTH);
 		GridBagLayout gbl_topPanel = new GridBagLayout();
-		gbl_topPanel.columnWidths = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };
-		gbl_topPanel.rowHeights = new int[] { 0, 0, 0, 0 };
+		gbl_topPanel.columnWidths = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+		gbl_topPanel.rowHeights = new int[] { 25, 0, 0, 0 };
 		gbl_topPanel.columnWeights = new double[] { 0.0, 0.0, 0.0, 1.0, 0.0,
-				0.0, 1.0, Double.MIN_VALUE };
+				0.0, 0.0, 0.0, Double.MIN_VALUE };
 		gbl_topPanel.rowWeights = new double[] { 1.0, 0.0, 1.0,
 				Double.MIN_VALUE };
 		topPanel.setLayout(gbl_topPanel);
@@ -122,31 +124,25 @@ public class GamePanel extends JPanel {
 			currentProofLabel.setText(proofString);
 		}
 
-		JButton btnNewButton_1 = new JButton("Cleanup");
-		btnNewButton_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				onCleanupButtonClicked();
-			}
-		});
-		GridBagConstraints gbc_btnNewButton_1 = new GridBagConstraints();
-		gbc_btnNewButton_1.fill = GridBagConstraints.HORIZONTAL;
-		gbc_btnNewButton_1.insets = new Insets(0, 0, 5, 5);
-		gbc_btnNewButton_1.gridx = 5;
-		gbc_btnNewButton_1.gridy = 0;
-		topPanel.add(btnNewButton_1, gbc_btnNewButton_1);
-
-		JButton btnUndo = new JButton("Undo");
+		JButton btnUndo = new JButton("Prev");
+		btnUndo.setSize(new Dimension(55, 23));
 		btnUndo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				onUndoButtonClicked();
 			}
 		});
 		GridBagConstraints gbc_btnUndo = new GridBagConstraints();
-		gbc_btnUndo.fill = GridBagConstraints.HORIZONTAL;
 		gbc_btnUndo.insets = new Insets(0, 0, 5, 5);
 		gbc_btnUndo.gridx = 5;
 		gbc_btnUndo.gridy = 1;
 		topPanel.add(btnUndo, gbc_btnUndo);
+
+		JButton btnNewButton_2 = new JButton("Next");
+		GridBagConstraints gbc_btnNewButton_2 = new GridBagConstraints();
+		gbc_btnNewButton_2.insets = new Insets(0, 0, 5, 5);
+		gbc_btnNewButton_2.gridx = 6;
+		gbc_btnNewButton_2.gridy = 1;
+		topPanel.add(btnNewButton_2, gbc_btnNewButton_2);
 
 		JPanel bottomPanel = new JPanel();
 		FlowLayout flowLayout = (FlowLayout) bottomPanel.getLayout();
@@ -156,7 +152,7 @@ public class GamePanel extends JPanel {
 		JLabel lblNewLabel_1 = new JLabel((String) null);
 		lblNewLabel_1
 				.setIcon(new ImageIcon(
-						GamePanel.class
+						ReplayPanel.class
 								.getResource("/javax/swing/plaf/metal/icons/ocean/question.png")));
 		bottomPanel.add(lblNewLabel_1);
 
@@ -167,14 +163,58 @@ public class GamePanel extends JPanel {
 		add(centerPanel, BorderLayout.CENTER);
 		GridBagLayout gbl_centerPanel = new GridBagLayout();
 		gbl_centerPanel.columnWidths = new int[] { 0, 0, 0 };
-		gbl_centerPanel.rowHeights = new int[] { 0, 0 };
+		gbl_centerPanel.rowHeights = new int[] { 0, 0, 0 };
 		gbl_centerPanel.columnWeights = new double[] { 1.0, 0.0,
 				Double.MIN_VALUE };
-		gbl_centerPanel.rowWeights = new double[] { 1.0, Double.MIN_VALUE };
+		gbl_centerPanel.rowWeights = new double[] { 0.0, 1.0, Double.MIN_VALUE };
 		centerPanel.setLayout(gbl_centerPanel);
+
+		JPanel panel_1 = new JPanel();
+		panel_1.setBorder(new LineBorder(new Color(0, 0, 0)));
+		panel_1.setPreferredSize(new Dimension(150, 150));
+		GridBagConstraints gbc_panel_1 = new GridBagConstraints();
+		gbc_panel_1.insets = new Insets(0, 0, 5, 0);
+		gbc_panel_1.fill = GridBagConstraints.BOTH;
+		gbc_panel_1.gridx = 1;
+		gbc_panel_1.gridy = 0;
+		centerPanel.add(panel_1, gbc_panel_1);
+		GridBagLayout gbl_panel_1 = new GridBagLayout();
+		gbl_panel_1.columnWidths = new int[] { 0, 0, 0, 0 };
+		gbl_panel_1.rowHeights = new int[] { 0, 0, 0, 0, 0 };
+		gbl_panel_1.columnWeights = new double[] { 1.0, 0.0, 1.0,
+				Double.MIN_VALUE };
+		gbl_panel_1.rowWeights = new double[] { 1.0, 0.0, 0.0, 1.0,
+				Double.MIN_VALUE };
+		panel_1.setLayout(gbl_panel_1);
+
+		JLabel lblNewLabel_2 = new JLabel("");
+		lblNewLabel_2.setIcon(new ImageIcon(ReplayPanel.class
+				.getResource("/javax/swing/plaf/metal/icons/Inform.gif")));
+		GridBagConstraints gbc_lblNewLabel_2 = new GridBagConstraints();
+		gbc_lblNewLabel_2.insets = new Insets(0, 0, 5, 5);
+		gbc_lblNewLabel_2.gridx = 1;
+		gbc_lblNewLabel_2.gridy = 1;
+		panel_1.add(lblNewLabel_2, gbc_lblNewLabel_2);
+
+		JTextArea txtrInfoBoxHere = new JTextArea();
+		txtrInfoBoxHere.setMinimumSize(new Dimension(100, 22));
+		txtrInfoBoxHere.setBackground(UIManager.getColor("Panel.background"));
+		txtrInfoBoxHere.setWrapStyleWord(true);
+		txtrInfoBoxHere
+				.setText("Here's where the next step would be detailed.");
+		txtrInfoBoxHere.setLineWrap(true);
+		txtrInfoBoxHere.setFont(UIManager.getFont("Label.font"));
+		txtrInfoBoxHere.setEditable(false);
+		GridBagConstraints gbc_txtrInfoBoxHere = new GridBagConstraints();
+		gbc_txtrInfoBoxHere.insets = new Insets(0, 0, 5, 5);
+		gbc_txtrInfoBoxHere.fill = GridBagConstraints.VERTICAL;
+		gbc_txtrInfoBoxHere.gridx = 1;
+		gbc_txtrInfoBoxHere.gridy = 2;
+		panel_1.add(txtrInfoBoxHere, gbc_txtrInfoBoxHere);
 
 		JScrollPane proofScrollPane = new JScrollPane();
 		GridBagConstraints gbc_proofScrollPane = new GridBagConstraints();
+		gbc_proofScrollPane.gridheight = 2;
 		gbc_proofScrollPane.insets = new Insets(0, 0, 0, 5);
 		gbc_proofScrollPane.fill = GridBagConstraints.BOTH;
 		gbc_proofScrollPane.gridx = 0;
@@ -196,7 +236,7 @@ public class GamePanel extends JPanel {
 		gbc_throwInScrollPane.anchor = GridBagConstraints.EAST;
 		gbc_throwInScrollPane.fill = GridBagConstraints.VERTICAL;
 		gbc_throwInScrollPane.gridx = 1;
-		gbc_throwInScrollPane.gridy = 0;
+		gbc_throwInScrollPane.gridy = 1;
 		centerPanel.add(throwInScrollPane, gbc_throwInScrollPane);
 
 		JList list = new JList();
@@ -222,12 +262,7 @@ public class GamePanel extends JPanel {
 		mainWindow.loadStartPanel();
 	}
 
-	private void onCleanupButtonClicked() {
-
-	}
-
 	private void onUndoButtonClicked() {
-		RewriteFrame rwFrame = new RewriteFrame(mainFrame);
-		rwFrame.setVisible(true);
+
 	}
 }

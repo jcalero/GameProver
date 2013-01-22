@@ -63,4 +63,11 @@ public class MainWindow {
 		mainFrame.setContentPane(sp);
 		mainFrame.validate();
 	}
+	
+	public void loadReplayPanel(String proofString) {
+		ReplayPanel rp  = new ReplayPanel(this, proofString);
+		mainFrame.setContentPane(rp);
+		mainFrame.validate();
+		
+	}
 }

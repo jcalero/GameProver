@@ -62,9 +62,9 @@ public class StartPanel extends JPanel {
 		add(centerPanel, centerPanelConstraints);
 		GridBagLayout centerPanelLayout = new GridBagLayout();
 		centerPanelLayout.columnWidths = new int[] { 150, 0 };
-		centerPanelLayout.rowHeights = new int[] { 40, 40, 0, 0 };
+		centerPanelLayout.rowHeights = new int[] { 40, 40, 40, 0, 0, 0 };
 		centerPanelLayout.columnWeights = new double[] { 0.0, Double.MIN_VALUE };
-		centerPanelLayout.rowWeights = new double[] { 0.0, 0.0, 0.0,
+		centerPanelLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0,
 				Double.MIN_VALUE };
 		centerPanel.setLayout(centerPanelLayout);
 
@@ -99,13 +99,37 @@ public class StartPanel extends JPanel {
 				showLoadProofBrowser();
 			}
 		});
+		
+		JButton btnNewButton = new JButton("Watch Replay");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				showReplayBrowser();
+			}
+		});
+		btnNewButton.setPreferredSize(new Dimension(140, 40));
+		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
+		gbc_btnNewButton.fill = GridBagConstraints.BOTH;
+		gbc_btnNewButton.insets = new Insets(0, 0, 5, 0);
+		gbc_btnNewButton.gridx = 0;
+		gbc_btnNewButton.gridy = 2;
+		centerPanel.add(btnNewButton, gbc_btnNewButton);
+		
+		JButton btnLoadSetFrom = new JButton("Load From File...");
+		btnLoadSetFrom.setPreferredSize(new Dimension(140, 40));
+		GridBagConstraints gbc_btnLoadSetFrom = new GridBagConstraints();
+		gbc_btnLoadSetFrom.fill = GridBagConstraints.HORIZONTAL;
+		gbc_btnLoadSetFrom.insets = new Insets(0, 0, 5, 0);
+		gbc_btnLoadSetFrom.gridx = 0;
+		gbc_btnLoadSetFrom.gridy = 3;
+		centerPanel.add(btnLoadSetFrom, gbc_btnLoadSetFrom);
 
 		// Quit Button
 		JButton quitButton = new JButton("Quit");
 		quitButton.setPreferredSize(new Dimension(150, 40));
 		GridBagConstraints quitButtonConstraints = new GridBagConstraints();
+		quitButtonConstraints.fill = GridBagConstraints.HORIZONTAL;
 		quitButtonConstraints.gridx = 0;
-		quitButtonConstraints.gridy = 2;
+		quitButtonConstraints.gridy = 4;
 		centerPanel.add(quitButton, quitButtonConstraints);
 		quitButton.addActionListener(new ActionListener() {
 			@Override
@@ -147,5 +171,10 @@ public class StartPanel extends JPanel {
 	protected void showLoadProofBrowser() {
 		LoadProofDialog loadProofDialog = new LoadProofDialog(mainWindow, mainFrame);
 		loadProofDialog.setVisible(true);
+	}
+	
+	protected void showReplayBrowser() {
+		LoadReplayDialog loadReplayDialog = new LoadReplayDialog(mainWindow, mainFrame);
+		loadReplayDialog.setVisible(true);
 	}
 }

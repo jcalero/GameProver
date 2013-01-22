@@ -3,7 +3,6 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -13,6 +12,7 @@ import java.awt.event.ActionListener;
 import javax.swing.AbstractListModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -20,7 +20,7 @@ import javax.swing.JTextArea;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 
-public class LoadProofDialog extends JDialog {
+public class LoadReplayDialog extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -36,7 +36,7 @@ public class LoadProofDialog extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public LoadProofDialog(MainWindow mainWindow, Frame owner) {
+	public LoadReplayDialog(MainWindow mainWindow, JFrame owner) {
 		super(owner, true);
 		this.mainWindow = mainWindow;
 		setDialogBounds();
@@ -45,7 +45,7 @@ public class LoadProofDialog extends JDialog {
 		setResizable(true);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		
-		setTitle("Choose a proof to load");
+		setTitle("Choose a proof to watch replay of");
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -95,16 +95,15 @@ public class LoadProofDialog extends JDialog {
 		buttonPane.setLayout(fl_buttonPane);
 		getContentPane().add(buttonPane, BorderLayout.SOUTH);
 		
-		JButton loadButton = new JButton("Load");
-		loadButton.addActionListener(new ActionListener() {
+		JButton replayButton = new JButton("Watch Replay");
+		replayButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				loadAction();
+				replayAction();
 			}
 		});
-		loadButton.setActionCommand("Load");
-		buttonPane.add(loadButton);
-		getRootPane().setDefaultButton(loadButton);
+		replayButton.setActionCommand("Replay");
+		buttonPane.add(replayButton);
 
 		JButton cancelButton = new JButton("Cancel");
 		cancelButton.addActionListener(new ActionListener() {
@@ -122,8 +121,8 @@ public class LoadProofDialog extends JDialog {
 		setMinimumSize(new Dimension(minX, minY));
 	}
 	
-	private void loadAction() {
-		mainWindow.loadGamePanel("");
+	private void replayAction() {
+		mainWindow.loadReplayPanel("A&B->B&A");
 		setVisible(false);
 	}
 	
