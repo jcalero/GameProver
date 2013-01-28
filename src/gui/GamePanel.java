@@ -10,22 +10,32 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
-import javax.swing.AbstractListModel;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
 import logic.Expression;
+import logic.LogicStep;
 import logic.ProofState;
+import logic.ReplayManager;
+import logic.Rule;
+import logic.SavedProof;
+import parser.MyExpressionParser;
 
 public class GamePanel extends JPanel {
 
@@ -35,14 +45,20 @@ public class GamePanel extends JPanel {
 	private JFrame mainFrame;
 	private ProofStatePanel psPanel;
 	private RewriteFrame rewriteFrame;
+	private GameManager gameManager;
 
 	private JButton btnUndo;
 	private JButton btnCleanup;
 	private JScrollPane proofScrollPane;
 	private JLabel statusBarLabel;
 	private JLabel statusBarIconLabel;
+	private JList throwInList;
+	private DefaultListModel throwInListModel;
 
 	private Expression toProve;
+
+	private String[] axioms = new String[] { "(0+1)=1", "(x+0)=x",
+			"(x+(y+1))=((x+y)+1)", "(x*0)=0", "(x*(y+1))=((x*y)+x)"};
 
 	/**
 	 * Create the panel.
@@ -53,17 +69,12 @@ public class GamePanel extends JPanel {
 		this.toProve = expression;
 		
 		initialize();
+		loadAxioms();
 		
-		// TODO: Get rid of this when finished testing
-		// ------ TEST
 		ProofState ps;
 		ps = new ProofState(toProve);
 
-		GameManager gameManager = new GameManager(this, ps);
-//		System.out.println("ProofStateList: " + ps.getProofStateList());
-//		psPanel = new ProofStatePanel(gameManager, ps);
-//		proofScrollPane.setViewportView(psPanel);
-		// ------------
+		gameManager = new GameManager(this, ps);
 	}
 
 	private void initialize() {
@@ -168,7 +179,7 @@ public class GamePanel extends JPanel {
 		JPanel centerPanel = new JPanel();
 		add(centerPanel, BorderLayout.CENTER);
 		GridBagLayout gbl_centerPanel = new GridBagLayout();
-		gbl_centerPanel.columnWidths = new int[] { 0, 0, 0 };
+		gbl_centerPanel.columnWidths = new int[] { 0, 150, 0 };
 		gbl_centerPanel.rowHeights = new int[] { 0, 0 };
 		gbl_centerPanel.columnWeights = new double[] { 1.0, 0.0,
 				Double.MIN_VALUE };
@@ -184,7 +195,7 @@ public class GamePanel extends JPanel {
 		centerPanel.add(proofScrollPane, gbc_proofScrollPane);
 
 		JPanel proofPanel = new JPanel();
-		JLabel lblNewLabel = new JLabel("Here's where the proof will be played");
+		JLabel lblNewLabel = new JLabel("Here's where the proof should be displayed");
 		proofPanel.add(lblNewLabel);
 
 		if (psPanel == null) {
@@ -194,29 +205,38 @@ public class GamePanel extends JPanel {
 		}
 
 		JScrollPane throwInScrollPane = new JScrollPane();
+		throwInScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		GridBagConstraints gbc_throwInScrollPane = new GridBagConstraints();
-		gbc_throwInScrollPane.anchor = GridBagConstraints.EAST;
-		gbc_throwInScrollPane.fill = GridBagConstraints.VERTICAL;
+		gbc_throwInScrollPane.fill = GridBagConstraints.BOTH;
 		gbc_throwInScrollPane.gridx = 1;
 		gbc_throwInScrollPane.gridy = 0;
 		centerPanel.add(throwInScrollPane, gbc_throwInScrollPane);
 
-		JList list = new JList();
-		list.setPreferredSize(new Dimension(150, 0));
-		list.setModel(new AbstractListModel() {
-			private static final long serialVersionUID = 1L;
-			String[] values = new String[] { "(0+1)=1", "(x+0)=x",
-					"(x+(y+1))=((x+y)+1)", "(x*0)=0", "(x*(y+1))=((x*y)+x)" };
-
-			public int getSize() {
-				return values.length;
+		throwInList = new JList();
+		throwInList.setPreferredSize(new Dimension(150, 0));
+		throwInScrollPane.setViewportView(throwInList);
+		throwInList.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				listClickHandler(e);
 			}
 
-			public Object getElementAt(int index) {
-				return values[index];
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
 			}
 		});
-		throwInScrollPane.setViewportView(list);
 	}
 
 	private void onMenuButtonClicked() {
@@ -265,5 +285,124 @@ public class GamePanel extends JPanel {
 		JLabel doneLabel = new JLabel("Finished the proof");
 		donePanel.add(doneLabel);
 		getProofScrollPane().setViewportView(donePanel);
+	}
+	
+	public void loadAxioms() {
+		throwInListModel = new DefaultListModel();
+		for (String s : axioms) {
+			Expression exp;
+			try {
+				exp = MyExpressionParser.parse(s);
+				SavedProof sp = new SavedProof(exp);
+				throwInListModel.addElement(sp);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		throwInList.setModel(throwInListModel);
+	}
+	
+	private void listClickHandler(MouseEvent e) {
+		Rectangle r = throwInList.getCellBounds(0, throwInList.getLastVisibleIndex());
+		int selected = -1;
+
+		if (r != null && r.contains(e.getPoint())) {
+			selected = throwInList.locationToIndex(e.getPoint());
+		}
+
+		if (selected != -1) {
+			SavedProof proof = (SavedProof) throwInListModel.getElementAt(selected);
+			Expression exp = proof.getExpression();
+
+			boolean theorem = false;
+			if (selected < axioms.length)
+				theorem = true;
+			else
+				theorem = false;
+
+			// Left mouse clicked and a proof is going on => Throw in
+			if (e.getButton() == MouseEvent.BUTTON1 && gameManager.getGameList().size() > 0) {
+				if (exp.containsTermVars()) {
+//					throwIn.setVisible(true);
+
+					// Operating on chars to preserve brackets
+					char[] charArray = exp.toString().toCharArray();
+					String toParse = "";
+					for (int i = 0; i < charArray.length; i++) {
+						if (Character.isLetter(charArray[i])) {
+							toParse += "?" + charArray[i];
+						} else {
+							toParse += charArray[i];
+						}
+					}
+					try {
+						exp = MyExpressionParser.parse(toParse);
+					} catch (Exception ex) {
+						ex.printStackTrace();
+						System.out
+								.println("ERROR: Failed to parse variable with ? added");
+					}
+					LogicStep ls = new LogicStep(Rule.AddAssumVar,
+							gameManager.getCurrentDisplayPanel().getAbsoluteDepth());
+					ls.setNewExpression(exp);
+					gameManager.getStepManager().applyRule(ls);
+					gameManager.updateFrame();
+				} else {
+					throwInList.setSelectedIndex(selected);
+					System.out.println("Left clicked on: " + exp);
+//					throwIn.setVisible(true);
+					LogicStep ls = new LogicStep(Rule.AddAssum,
+							gameManager.getCurrentDisplayPanel().getAbsoluteDepth());
+					ls.setNewExpression(exp);
+					gameManager.getStepManager().applyRule(ls);
+					gameManager.updateFrame();
+				}
+			}
+			// Right mouse clicked and not clicked on a theorem => Menu
+			else if (e.getButton() == MouseEvent.BUTTON3 && !theorem) {
+				throwInList.setSelectedIndex(selected);
+				System.out.println("Right clicked on: " + exp);
+				Object[] options = { "Throw in", "Replay", "Prove" };
+				int n = JOptionPane
+						.showOptionDialog(this,
+								"Choose what to do with this theorem.",
+								"Loading theorem",
+								JOptionPane.YES_NO_CANCEL_OPTION,
+								JOptionPane.QUESTION_MESSAGE, null, options,
+								options[2]);
+				switch (n) {
+				case 0:
+					if (gameManager.getGameList().size() < 1) {
+						throwInList.clearSelection();
+						return;
+					} else {
+//						throwIn.setVisible(true);
+						LogicStep ls = new LogicStep(Rule.AddAssum,
+								gameManager.getCurrentDisplayPanel().getAbsoluteDepth());
+						ls.setNewExpression(exp);
+						gameManager.getStepManager().applyRule(ls);
+						gameManager.updateFrame();
+					}
+					break;
+				case 1:
+//					setGoalHandler(exp);
+//					replayManager = new ReplayManager(this);
+//					replayManager.load(proof);
+//					setReplaying(true);
+					break;
+				case 2:
+//					setGoalHandler(exp);
+					break;
+				default:
+					break;
+				}
+			} else {
+				throwInList.setSelectedIndex(selected);
+				setHelpText("Help: Cannot do that.");
+			}
+		} else {
+			throwInList.clearSelection();
+		}
+
 	}
 }

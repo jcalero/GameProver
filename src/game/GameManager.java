@@ -104,6 +104,10 @@ public class GameManager {
 	public ArrayList<SavedProof> getSavedProofs() {
 		return savedProofs;
 	}
+	
+	public StepManager getStepManager() {
+		return stepManager;
+	}
 
 	public void setReplaying(boolean state) {
 		isReplaying = state;
