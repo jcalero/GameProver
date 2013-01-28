@@ -63,6 +63,11 @@ public class ProofState implements Cloneable {
 		this();
 		this.goals.add(MyExpressionParser.parse(expressionString));
 	}
+	
+	public ProofState( Expression toProve ) {
+		this();
+		this.goals.add(toProve);
+	}
 
 	public Object cloneps() {
 		ProofState o = null;

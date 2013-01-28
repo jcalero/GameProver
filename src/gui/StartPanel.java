@@ -21,9 +21,12 @@ public class StartPanel extends JPanel {
 	 * Default serial version id.
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	private JFrame mainFrame;
 	private MainWindow mainWindow;
+	private NewProofDialog newProofDialog;
+	private LoadProofDialog loadProofDialog;
+	private LoadReplayDialog loadReplayDialog;
 
 	// private JPanel contentPane;
 
@@ -99,7 +102,7 @@ public class StartPanel extends JPanel {
 				showLoadProofBrowser();
 			}
 		});
-		
+
 		JButton btnNewButton = new JButton("Watch Replay");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -113,7 +116,7 @@ public class StartPanel extends JPanel {
 		gbc_btnNewButton.gridx = 0;
 		gbc_btnNewButton.gridy = 2;
 		centerPanel.add(btnNewButton, gbc_btnNewButton);
-		
+
 		JButton btnLoadSetFrom = new JButton("Load From File...");
 		btnLoadSetFrom.setPreferredSize(new Dimension(140, 40));
 		GridBagConstraints gbc_btnLoadSetFrom = new GridBagConstraints();
@@ -164,17 +167,25 @@ public class StartPanel extends JPanel {
 	 * input.
 	 */
 	protected void showNewProofDialog() {
-		NewProofDialog newProofDialog = new NewProofDialog(mainWindow, mainFrame);
+		if (newProofDialog == null) {
+			newProofDialog = new NewProofDialog(mainWindow, mainFrame);
+		} else {
+			newProofDialog.reset();
+		}
 		newProofDialog.setVisible(true);
 	}
 
 	protected void showLoadProofBrowser() {
-		LoadProofDialog loadProofDialog = new LoadProofDialog(mainWindow, mainFrame);
+		if (loadProofDialog == null) {
+			loadProofDialog = new LoadProofDialog(mainWindow, mainFrame);
+		}
 		loadProofDialog.setVisible(true);
 	}
-	
+
 	protected void showReplayBrowser() {
-		LoadReplayDialog loadReplayDialog = new LoadReplayDialog(mainWindow, mainFrame);
+		if (loadReplayDialog == null) {
+			loadReplayDialog = new LoadReplayDialog(mainWindow, mainFrame);
+		}
 		loadReplayDialog.setVisible(true);
 	}
 }

@@ -14,17 +14,22 @@ import javax.swing.JScrollPane;
 
 import logic.Expression;
 import logic.GameState;
+import logic.ProofState;
 import logic.SavedProof;
+import logic.StepManager;
 
 public class GameManager {
 
 	private GamePanel gamePanel;
+	private ProofState proofState;
 	private ReplayPanel replayPanel;
 	private ProofStatePanel currentDisplayPanel;
+	private StepManager stepManager;
 
 	private boolean isReplaying;
 
 	private static ArrayList<GameState> gameList = new ArrayList<GameState>();
+	
 	private ArrayList<SavedProof> savedProofs = new ArrayList<SavedProof>();
 	
 	//TODO: Get rid of this
@@ -33,8 +38,10 @@ public class GameManager {
 	//TODO: Make set/getters
 	public boolean wasCleanup;
 
-	public GameManager(GamePanel gamePanel) {
+	public GameManager(GamePanel gamePanel, ProofState initialState) {
 		this.gamePanel = gamePanel;
+		this.proofState = initialState;
+		initialiseGoal(initialState.getGoal(0));
 	}
 	
 	public GameManager(ReplayPanel replayPanel) {
@@ -139,6 +146,80 @@ public class GameManager {
 	//TODO: Move this to main Window?? Or keep here.
 	public void play(URL sound) {
 		// Does nothing at the moment as we've disabled sound.
+	}
+	
+	public void initialiseGoal(Expression newGoal) {
+//		rwframe.restart();
+
+//		if (done != null && done.getParent() != null) {
+//			remove(done);
+//		}
+		
+//		ArrayList<Expression> goals = new ArrayList<Expression>();
+//		String s;
+//		if (newGoal == null) {
+//			s = (String) JOptionPane.showInputDialog(this,
+//					"Please input formula:", "Set Goal",
+//					JOptionPane.PLAIN_MESSAGE, null, null, prevTheorem);
+//
+//			if (s == null)
+//				return;
+//
+//			try {
+//				goals.add(MyExpressionParser.parse(s));
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//			toProve = goals.get(0);
+//		} else {
+//			goals.add(newGoal);
+//			s = newGoal.toString();
+//			toProve = newGoal;
+//		}
+		gamePanel.setUndoButtonState(false);
+		gamePanel.setUndoText("Undo");
+
+//		prevTheorem = s;
+
+//		ProofState state = new ProofState();
+//		proofState.setGoals(goals);
+		proofState.getProofStateList().clear();
+		proofState.getProofStateList().add(proofState);
+
+//		rwframe.setdisptext(s);
+		gameList.clear();
+		setStateToShow(proofState);
+
+		GameState gameState = new GameState();
+		gameState.setProofStateList(proofState.getProofStateList());
+		gameState.setDisplayStateIndex(proofState.getDepth());
+		gameList.add(gameState);
+
+		stepManager = new StepManager(this);
+		stepManager.start(proofState.getGoal(0));
+
+//		btnRepo.setEnabled(true);
+		// btnReplay.setEnabled(true);
+		updateFrame();
+	}
+	
+	public void setStateToShow(ProofState pf) {
+		gamePanel.invalidate();
+
+		if (currentDisplayPanel != null) {
+			gamePanel.remove(currentDisplayPanel);
+		}
+
+		ProofStatePanel pfPanel = new ProofStatePanel(this, pf);
+		JScrollPane scrollPanel = gamePanel.getProofScrollPane();
+		scrollPanel.setViewportView(pfPanel);
+
+		int s = pfPanel.getHsize();
+		pfPanel.setPreferredSize(new Dimension(scrollPanel.getWidth(), s));
+		currentDisplayPanel = pfPanel;
+		gamePanel.repaint();
+
+		gamePanel.validate();
 	}
 
 }

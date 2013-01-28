@@ -20,6 +20,8 @@ import javax.swing.JTextArea;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 
+import logic.Expression;
+
 public class LoadProofDialog extends JDialog {
 
 	private static final long serialVersionUID = 1L;
@@ -123,7 +125,7 @@ public class LoadProofDialog extends JDialog {
 	}
 	
 	private void loadAction() {
-		mainWindow.loadGamePanel("");
+		mainWindow.loadGamePanel(new Expression("A"));
 		setVisible(false);
 	}
 	

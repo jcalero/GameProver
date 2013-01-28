@@ -24,7 +24,9 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
+import logic.Expression;
 import logic.ProofState;
+import logic.StepManager;
 
 public class GamePanel extends JPanel {
 
@@ -34,42 +36,35 @@ public class GamePanel extends JPanel {
 	private JFrame mainFrame;
 	private ProofStatePanel psPanel;
 	private RewriteFrame rewriteFrame;
-	
+
 	private JButton btnUndo;
 	private JButton btnCleanup;
 	private JScrollPane proofScrollPane;
 	private JLabel statusBarLabel;
 	private JLabel statusBarIconLabel;
 
-	private String proofString;
+	private Expression toProve;
 
 	/**
 	 * Create the panel.
 	 */
-	public GamePanel(MainWindow mainWindow, String proofString) {
+	public GamePanel(MainWindow mainWindow, Expression expression) {
 		this.mainWindow = mainWindow;
 		this.mainFrame = mainWindow.getMainFrame();
-		this.proofString = proofString;
-
+		this.toProve = expression;
+		
+		initialize();
+		
 		// TODO: Get rid of this when finished testing
 		// ------ TEST
-		if (proofString.length() > 0) {
-			ProofState ps = null;
-			try {
-				ps = new ProofState(proofString);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			if (ps != null) {
-				System.out.println(ps);
-				GameManager gameManager = new GameManager(this);
-				System.out.println(ps.getProofStateList());
-				psPanel = new ProofStatePanel(gameManager, ps);
-			}
-		}
-		// ------------
+		ProofState ps;
+		ps = new ProofState(toProve);
 
-		initialize();
+		GameManager gameManager = new GameManager(this, ps);
+		System.out.println("ProofStateList: " + ps.getProofStateList());
+		psPanel = new ProofStatePanel(gameManager, ps);
+		proofScrollPane.setViewportView(psPanel);
+		// ------------
 	}
 
 	private void initialize() {
@@ -127,9 +122,8 @@ public class GamePanel extends JPanel {
 		gbc_currentProofLabel.gridy = 0;
 		panel.add(currentProofLabel, gbc_currentProofLabel);
 		currentProofLabel.setFont(new Font("Tahoma", Font.BOLD, 13));
-		if (!proofString.isEmpty()) {
-			currentProofLabel.setText(proofString);
-		}
+
+		currentProofLabel.setText(toProve.toString());
 
 		btnCleanup = new JButton("Cleanup");
 		btnCleanup.addActionListener(new ActionListener() {
@@ -239,35 +233,35 @@ public class GamePanel extends JPanel {
 	private void onUndoButtonClicked() {
 
 	}
-	
+
 	public void setUndoText(String text) {
 		btnUndo.setText(text);
 	}
-	
+
 	public void setUndoButtonState(boolean state) {
 		btnUndo.setEnabled(state);
 	}
-	
+
 	public void setCleanupButtonState(boolean state) {
 		btnCleanup.setEnabled(state);
 	}
-	
+
 	public void setHelpText(String text) {
 		statusBarLabel.setText(text);
 	}
-	
+
 	public void setStatusBarIcon(ImageIcon icon) {
 		statusBarIconLabel.setIcon(icon);
 	}
-	
+
 	public JScrollPane getProofScrollPane() {
 		return proofScrollPane;
 	}
-	
+
 	public RewriteFrame getRewriteFrame() {
 		return rewriteFrame;
 	}
-	
+
 	public void loadDonePanel() {
 		JPanel donePanel = new JPanel();
 		JLabel doneLabel = new JLabel("Finished the proof");

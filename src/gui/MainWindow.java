@@ -4,6 +4,8 @@ import java.awt.Dimension;
 
 import javax.swing.JFrame;
 
+import logic.Expression;
+
 /**
  * @author Jakob Calero
  * 
@@ -32,9 +34,7 @@ public class MainWindow {
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setWindowBounds();
 		
-		StartPanel sp = new StartPanel(this);
-		mainFrame.setContentPane(sp);
-		mainFrame.validate();
+		loadStartPanel();
 	}
 
 	/**
@@ -52,8 +52,8 @@ public class MainWindow {
 		return mainFrame;
 	}
 	
-	public void loadGamePanel(String proofString) {
-		GamePanel gp = new GamePanel(this, proofString);
+	public void loadGamePanel(Expression expression) {
+		GamePanel gp = new GamePanel(this, expression);
 		mainFrame.setContentPane(gp);
 		mainFrame.validate();
 	}
