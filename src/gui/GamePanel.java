@@ -61,9 +61,9 @@ public class GamePanel extends JPanel {
 		ps = new ProofState(toProve);
 
 		GameManager gameManager = new GameManager(this, ps);
-		System.out.println("ProofStateList: " + ps.getProofStateList());
-		psPanel = new ProofStatePanel(gameManager, ps);
-		proofScrollPane.setViewportView(psPanel);
+//		System.out.println("ProofStateList: " + ps.getProofStateList());
+//		psPanel = new ProofStatePanel(gameManager, ps);
+//		proofScrollPane.setViewportView(psPanel);
 		// ------------
 	}
 

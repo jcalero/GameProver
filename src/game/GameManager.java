@@ -29,13 +29,13 @@ public class GameManager {
 	private boolean isReplaying;
 
 	private static ArrayList<GameState> gameList = new ArrayList<GameState>();
-	
+
 	private ArrayList<SavedProof> savedProofs = new ArrayList<SavedProof>();
-	
-	//TODO: Get rid of this
+
+	// TODO: Get rid of this
 	public JLabel rwIn;
-	
-	//TODO: Make set/getters
+
+	// TODO: Make set/getters
 	public boolean wasCleanup;
 
 	public GameManager(GamePanel gamePanel, ProofState initialState) {
@@ -43,7 +43,7 @@ public class GameManager {
 		this.proofState = initialState;
 		initialiseGoal(initialState.getGoal(0));
 	}
-	
+
 	public GameManager(ReplayPanel replayPanel) {
 		this.replayPanel = replayPanel;
 	}
@@ -62,17 +62,18 @@ public class GameManager {
 
 	// TODO: Move this to
 	public void updateFrame() {
+		System.out.println("Updating frame (" + currentDisplayPanel);
 		if (currentDisplayPanel != null) {
 			currentDisplayPanel.update();
 
 			JScrollPane proofArea = gamePanel.getProofScrollPane();
 
 			// Resize and repaint
-			int s = currentDisplayPanel.getHsize();
+			int s = currentDisplayPanel.getHeight();
 			currentDisplayPanel.setPreferredSize(new Dimension(proofArea
 					.getWidth(), s + 10));
 			currentDisplayPanel.revalidate();
-			// repaint(); (Not needed???)
+			gamePanel.repaint(); // (Not needed???)
 		}
 
 		// Check whether proof is finished
@@ -89,30 +90,30 @@ public class GameManager {
 	public ArrayList<GameState> getGameList() {
 		return gameList;
 	}
-	
-	// TODO: Update references to this to point to GamePanel instead. 
+
+	// TODO: Update references to this to point to GamePanel instead.
 	public RewriteFrame getrwframe() {
 		return gamePanel.getRewriteFrame();
 	}
-	
+
 	// TODO: Move this to "Game" specific object.
 	public ProofStatePanel getCurrentDisplayPanel() {
 		return currentDisplayPanel;
 	}
-	
+
 	public ArrayList<SavedProof> getSavedProofs() {
 		return savedProofs;
 	}
-	
+
 	public void setReplaying(boolean state) {
 		isReplaying = state;
 	}
-	
-	//TODO: Make references to this point to GamePanel instead.
+
+	// TODO: Make references to this point to GamePanel instead.
 	public void setHelptxt(String text) {
 		gamePanel.setHelpText(text);
 	}
-	
+
 	public void setRWexp(Expression exp, String type) {
 		gamePanel.getRewriteFrame().setdispExp(exp, type);
 	}
@@ -120,73 +121,73 @@ public class GameManager {
 	public boolean isReplaying() {
 		return isReplaying;
 	}
-	
-	//TODO: Move this to "Game" specific object.
+
+	// TODO: Move this to "Game" specific object.
 	public boolean isDone() {
 		return currentDisplayPanel.isDone();
 	}
 
-	//TODO: Move this to "Game" specific object.
+	// TODO: Move this to "Game" specific object.
 	public void doneBehaviour() {
 		gameList.clear();
 		// play(win);
 		gamePanel.setCleanupButtonState(false);
 		setReplaying(false);
 		gamePanel.remove(currentDisplayPanel);
-//		rwframe.setdispExp(null, null);
-//		rwframe.restart();
+		// rwframe.setdispExp(null, null);
+		// rwframe.restart();
 		gamePanel.setHelpText("Help:");
-//		gamePanel.setStatusBarIcon(null);
+		// gamePanel.setStatusBarIcon(null);
 
-//		done = new DonePanel(this);
-//		scrollPanel.setViewportView(done);
+		// done = new DonePanel(this);
+		// scrollPanel.setViewportView(done);
 		gamePanel.loadDonePanel();
 	}
-	
-	//TODO: Move this to main Window?? Or keep here.
+
+	// TODO: Move this to main Window?? Or keep here.
 	public void play(URL sound) {
 		// Does nothing at the moment as we've disabled sound.
 	}
-	
-	public void initialiseGoal(Expression newGoal) {
-//		rwframe.restart();
 
-//		if (done != null && done.getParent() != null) {
-//			remove(done);
-//		}
-		
-//		ArrayList<Expression> goals = new ArrayList<Expression>();
-//		String s;
-//		if (newGoal == null) {
-//			s = (String) JOptionPane.showInputDialog(this,
-//					"Please input formula:", "Set Goal",
-//					JOptionPane.PLAIN_MESSAGE, null, null, prevTheorem);
-//
-//			if (s == null)
-//				return;
-//
-//			try {
-//				goals.add(MyExpressionParser.parse(s));
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//			toProve = goals.get(0);
-//		} else {
-//			goals.add(newGoal);
-//			s = newGoal.toString();
-//			toProve = newGoal;
-//		}
+	public void initialiseGoal(Expression newGoal) {
+		// rwframe.restart();
+
+		// if (done != null && done.getParent() != null) {
+		// remove(done);
+		// }
+
+		// ArrayList<Expression> goals = new ArrayList<Expression>();
+		// String s;
+		// if (newGoal == null) {
+		// s = (String) JOptionPane.showInputDialog(this,
+		// "Please input formula:", "Set Goal",
+		// JOptionPane.PLAIN_MESSAGE, null, null, prevTheorem);
+		//
+		// if (s == null)
+		// return;
+		//
+		// try {
+		// goals.add(MyExpressionParser.parse(s));
+		// } catch (Exception e) {
+		// e.printStackTrace();
+		// }
+		// toProve = goals.get(0);
+		// } else {
+		// goals.add(newGoal);
+		// s = newGoal.toString();
+		// toProve = newGoal;
+		// }
 		gamePanel.setUndoButtonState(false);
 		gamePanel.setUndoText("Undo");
 
-//		prevTheorem = s;
+		// prevTheorem = s;
 
-//		ProofState state = new ProofState();
-//		proofState.setGoals(goals);
+		// ProofState state = new ProofState();
+		// proofState.setGoals(goals);
 		proofState.getProofStateList().clear();
 		proofState.getProofStateList().add(proofState);
 
-//		rwframe.setdisptext(s);
+		// rwframe.setdisptext(s);
 		gameList.clear();
 		setStateToShow(proofState);
 
@@ -198,11 +199,11 @@ public class GameManager {
 		stepManager = new StepManager(this);
 		stepManager.start(proofState.getGoal(0));
 
-//		btnRepo.setEnabled(true);
+		// btnRepo.setEnabled(true);
 		// btnReplay.setEnabled(true);
 		updateFrame();
 	}
-	
+
 	public void setStateToShow(ProofState pf) {
 		gamePanel.invalidate();
 
@@ -214,7 +215,7 @@ public class GameManager {
 		JScrollPane scrollPanel = gamePanel.getProofScrollPane();
 		scrollPanel.setViewportView(pfPanel);
 
-		int s = pfPanel.getHsize();
+		int s = pfPanel.getHeight();
 		pfPanel.setPreferredSize(new Dimension(scrollPanel.getWidth(), s));
 		currentDisplayPanel = pfPanel;
 		gamePanel.repaint();
