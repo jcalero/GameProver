@@ -25,6 +25,7 @@ public class GameManager {
 	private ReplayPanel replayPanel;
 	private ProofStatePanel currentDisplayPanel;
 	private StepManager stepManager;
+	private Expression theorem;
 
 	private boolean isReplaying;
 
@@ -41,7 +42,8 @@ public class GameManager {
 	public GameManager(GamePanel gamePanel, ProofState initialState) {
 		this.gamePanel = gamePanel;
 		this.proofState = initialState;
-		initialiseGoal(initialState.getGoal(0));
+		this.theorem = initialState.getGoal(0);
+		initialiseGoal(theorem);
 	}
 
 	public GameManager(ReplayPanel replayPanel) {
@@ -107,6 +109,10 @@ public class GameManager {
 	
 	public StepManager getStepManager() {
 		return stepManager;
+	}
+	
+	public Expression getTheorem() {
+		return theorem;
 	}
 
 	public void setReplaying(boolean state) {
@@ -226,5 +232,4 @@ public class GameManager {
 
 		gamePanel.validate();
 	}
-
 }

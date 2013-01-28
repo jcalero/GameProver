@@ -32,7 +32,6 @@ import javax.swing.border.LineBorder;
 import logic.Expression;
 import logic.LogicStep;
 import logic.ProofState;
-import logic.ReplayManager;
 import logic.Rule;
 import logic.SavedProof;
 import parser.MyExpressionParser;
@@ -281,9 +280,7 @@ public class GamePanel extends JPanel {
 	}
 
 	public void loadDonePanel() {
-		JPanel donePanel = new JPanel();
-		JLabel doneLabel = new JLabel("Finished the proof");
-		donePanel.add(doneLabel);
+		DonePanel donePanel = new DonePanel(this, gameManager.getTheorem());
 		getProofScrollPane().setViewportView(donePanel);
 	}
 	
@@ -300,6 +297,12 @@ public class GamePanel extends JPanel {
 			}
 		}
 		throwInList.setModel(throwInListModel);
+	}
+	
+	public void addExpressionToAxiomList(Expression exp) {
+//		userTheorems.add(toProve.toString());
+//		stepManager.save();
+		throwInListModel.addElement(exp);
 	}
 	
 	private void listClickHandler(MouseEvent e) {
