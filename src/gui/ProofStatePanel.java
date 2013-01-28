@@ -1,5 +1,7 @@
 package gui;
 
+import game.GameManager;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -15,7 +17,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Random;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -40,7 +41,7 @@ public class ProofStatePanel extends JPanel implements MouseListener,
 	private URL wrong = getClass().getResource("sounds/wrong.wav");
 	private URL kick = getClass().getResource("sounds/kick.wav");
 
-	public DisplayFrame parent;
+	public GameManager parent;
 	public ProofState logicState;
 	public StepManager stepManager;
 	private int assumStartX = 10;
@@ -129,11 +130,11 @@ public class ProofStatePanel extends JPanel implements MouseListener,
 	}
 
 	// 2012
-	public ProofStatePanel(DisplayFrame df) {
+	public ProofStatePanel(GameManager df) {
 		parent = df;
 	}
 
-	public ProofStatePanel(DisplayFrame df, ProofState pf) {
+	public ProofStatePanel(GameManager df, ProofState pf) {
 		buildRulesToString();
 
 		addMouseListener(this);// 2012 08 for help tips
@@ -1640,7 +1641,7 @@ public class ProofStatePanel extends JPanel implements MouseListener,
 
 	/**
 	 * Reverts to the last game state stored with record(). The gamestate list
-	 * is stored in the DisplayFrame.
+	 * is stored in the GameManager.
 	 * 
 	 * @return The top level (visible) ProofState as specified in the new
 	 *         (previous) GameState.

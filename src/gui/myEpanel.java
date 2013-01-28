@@ -20,7 +20,7 @@ public class myEpanel extends JPanel implements MouseListener {
 	private myEpanel left;
 	private myEpanel right;
 	private JLabel node;
-	public RWFrame parent;
+	public RewriteFrame parent;
 	private boolean hassub;
 	private boolean chosen;
 	private static boolean find;
@@ -43,7 +43,7 @@ public class myEpanel extends JPanel implements MouseListener {
 		origExp = null;
 	}
 
-	public myEpanel(JLabel n, RWFrame pf) {
+	public myEpanel(JLabel n, RewriteFrame pf) {
 		parent = pf;
 		node = n;
 		add(node);
@@ -67,7 +67,7 @@ public class myEpanel extends JPanel implements MouseListener {
 		add(right, BorderLayout.EAST);
 	}
 
-	public myEpanel setmyEpanel(Expression e, RWFrame pf, String type) {
+	public myEpanel setmyEpanel(Expression e, RewriteFrame pf, String type) {
 		parent = pf;
 		this.removeAll();
 		origExp = e;

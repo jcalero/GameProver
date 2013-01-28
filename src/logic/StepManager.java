@@ -11,11 +11,11 @@
  */
 package logic;
 
-import gui.DisplayFrame;
+import game.GameManager;
 
 public class StepManager {
 
-	private DisplayFrame window;
+	private GameManager window;
 	private static SavedProof proof;
 
 	/**
@@ -24,7 +24,7 @@ public class StepManager {
 	 * @param df
 	 *            Reference to the main application window.
 	 */
-	public StepManager(DisplayFrame df) {
+	public StepManager(GameManager df) {
 		this.window = df;
 	}
 
@@ -388,7 +388,7 @@ public class StepManager {
 	 * Returns the current unfinished proof sequence.
 	 * 
 	 * @return A SavedProof at a partially finished state before being saved to
-	 *         the list of saved proofs (stored in DisplayFrame).
+	 *         the list of saved proofs (stored in GameManager).
 	 */
 	public SavedProof getCurrentProof() {
 		return proof;

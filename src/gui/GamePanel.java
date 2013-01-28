@@ -1,5 +1,7 @@
 package gui;
 
+import game.GameManager;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -31,6 +33,13 @@ public class GamePanel extends JPanel {
 	private MainWindow mainWindow;
 	private JFrame mainFrame;
 	private ProofStatePanel psPanel;
+	private RewriteFrame rewriteFrame;
+	
+	private JButton btnUndo;
+	private JButton btnCleanup;
+	private JScrollPane proofScrollPane;
+	private JLabel statusBarLabel;
+	private JLabel statusBarIconLabel;
 
 	private String proofString;
 
@@ -53,9 +62,9 @@ public class GamePanel extends JPanel {
 			}
 			if (ps != null) {
 				System.out.println(ps);
-				DisplayFrame df = new DisplayFrame();
+				GameManager gameManager = new GameManager(this);
 				System.out.println(ps.getProofStateList());
-				psPanel = new ProofStatePanel(df, ps);
+				psPanel = new ProofStatePanel(gameManager, ps);
 			}
 		}
 		// ------------
@@ -122,8 +131,8 @@ public class GamePanel extends JPanel {
 			currentProofLabel.setText(proofString);
 		}
 
-		JButton btnNewButton_1 = new JButton("Cleanup");
-		btnNewButton_1.addActionListener(new ActionListener() {
+		btnCleanup = new JButton("Cleanup");
+		btnCleanup.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				onCleanupButtonClicked();
 			}
@@ -133,9 +142,9 @@ public class GamePanel extends JPanel {
 		gbc_btnNewButton_1.insets = new Insets(0, 0, 5, 5);
 		gbc_btnNewButton_1.gridx = 5;
 		gbc_btnNewButton_1.gridy = 0;
-		topPanel.add(btnNewButton_1, gbc_btnNewButton_1);
+		topPanel.add(btnCleanup, gbc_btnNewButton_1);
 
-		JButton btnUndo = new JButton("Undo");
+		btnUndo = new JButton("Undo");
 		btnUndo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				onUndoButtonClicked();
@@ -153,15 +162,15 @@ public class GamePanel extends JPanel {
 		flowLayout.setAlignment(FlowLayout.LEFT);
 		add(bottomPanel, BorderLayout.SOUTH);
 
-		JLabel lblNewLabel_1 = new JLabel((String) null);
-		lblNewLabel_1
+		statusBarIconLabel = new JLabel((String) null);
+		statusBarIconLabel
 				.setIcon(new ImageIcon(
 						GamePanel.class
 								.getResource("/javax/swing/plaf/metal/icons/ocean/question.png")));
-		bottomPanel.add(lblNewLabel_1);
+		bottomPanel.add(statusBarIconLabel);
 
-		JLabel lblThisIsThe = new JLabel("This is the status bar");
-		bottomPanel.add(lblThisIsThe);
+		statusBarLabel = new JLabel("This is the status bar");
+		bottomPanel.add(statusBarLabel);
 
 		JPanel centerPanel = new JPanel();
 		add(centerPanel, BorderLayout.CENTER);
@@ -173,7 +182,7 @@ public class GamePanel extends JPanel {
 		gbl_centerPanel.rowWeights = new double[] { 1.0, Double.MIN_VALUE };
 		centerPanel.setLayout(gbl_centerPanel);
 
-		JScrollPane proofScrollPane = new JScrollPane();
+		proofScrollPane = new JScrollPane();
 		GridBagConstraints gbc_proofScrollPane = new GridBagConstraints();
 		gbc_proofScrollPane.insets = new Insets(0, 0, 0, 5);
 		gbc_proofScrollPane.fill = GridBagConstraints.BOTH;
@@ -223,11 +232,46 @@ public class GamePanel extends JPanel {
 	}
 
 	private void onCleanupButtonClicked() {
-
+		rewriteFrame = new RewriteFrame(mainFrame);
+		rewriteFrame.setVisible(true);
 	}
 
 	private void onUndoButtonClicked() {
-		RewriteFrame rwFrame = new RewriteFrame(mainFrame);
-		rwFrame.setVisible(true);
+
+	}
+	
+	public void setUndoText(String text) {
+		btnUndo.setText(text);
+	}
+	
+	public void setUndoButtonState(boolean state) {
+		btnUndo.setEnabled(state);
+	}
+	
+	public void setCleanupButtonState(boolean state) {
+		btnCleanup.setEnabled(state);
+	}
+	
+	public void setHelpText(String text) {
+		statusBarLabel.setText(text);
+	}
+	
+	public void setStatusBarIcon(ImageIcon icon) {
+		statusBarIconLabel.setIcon(icon);
+	}
+	
+	public JScrollPane getProofScrollPane() {
+		return proofScrollPane;
+	}
+	
+	public RewriteFrame getRewriteFrame() {
+		return rewriteFrame;
+	}
+	
+	public void loadDonePanel() {
+		JPanel donePanel = new JPanel();
+		JLabel doneLabel = new JLabel("Finished the proof");
+		donePanel.add(doneLabel);
+		getProofScrollPane().setViewportView(donePanel);
 	}
 }

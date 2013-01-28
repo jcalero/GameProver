@@ -36,6 +36,7 @@ public class SpecialiseDialog extends JDialog {
 		origExp = new Expression();
 		setTitle("Please specialise the theorem...");
 		setBounds(100, 100, 450, 300);
+		setLocationRelativeTo(null);
 		getContentPane().setLayout(new BorderLayout());
 		pnlSpecialise.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -84,18 +85,16 @@ public class SpecialiseDialog extends JDialog {
 		origExp = e;
 		lblOrigExp.setText(exp.toString());
 
-		ArrayList<String> expVars = exp.getExpressionAsList();
+		ArrayList<String> expVars = exp.getTermVars();
 		ArrayList<String> expVarsNoDup = new ArrayList<String>();
 		Iterator<String> expVarsIt = expVars.iterator();
-		System.out.println("expVars = " + expVars);
 
 		//remove duplicates
 		for (int i = 0; i < expVars.size(); i++) {
 			String str = expVars.get(i);
-			if (!expVarsNoDup.contains(str) && str.contains("?"))
+			if (!expVarsNoDup.contains(str))
 				expVarsNoDup.add(str);
 		}
-		System.out.println("expVarsNoDup = " + expVarsNoDup);
 
 		expVarsIt = expVarsNoDup.iterator();
 		while (expVarsIt.hasNext()) {	
@@ -139,16 +138,9 @@ public class SpecialiseDialog extends JDialog {
 	}
 
 	public void okHandler() {
-		panelToAddTo.parent.throwIn.setVisible(false);
+//		panelToAddTo.parent.throwIn.setVisible(false);
 		subVars();
-		
-		if (exp.toString().contains("?")) {
-			panelToAddTo.logicState.addAssumVar
-			(exp);			
-		} else {
-			panelToAddTo.logicState.addAssum(exp);
-		}
-		panelToAddTo.logicState.removeAssumVar(origExp);
+		panelToAddTo.logicState.addAssum(exp);
 		panelToAddTo.parent.updateFrame();
 		dispose();
 	}
