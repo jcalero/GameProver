@@ -26,7 +26,6 @@ import javax.swing.border.LineBorder;
 
 import logic.Expression;
 import logic.ProofState;
-import logic.StepManager;
 
 public class GamePanel extends JPanel {
 
@@ -207,8 +206,7 @@ public class GamePanel extends JPanel {
 		list.setModel(new AbstractListModel() {
 			private static final long serialVersionUID = 1L;
 			String[] values = new String[] { "(0+1)=1", "(x+0)=x",
-					"(x+(y+1))=((x+y)+1)", "(x*0)=0", "(x*(y+1))=((x*y)+x)",
-					"A&B->C", "z\\xczsldslsaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" };
+					"(x+(y+1))=((x+y)+1)", "(x*0)=0", "(x*(y+1))=((x*y)+x)" };
 
 			public int getSize() {
 				return values.length;
