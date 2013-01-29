@@ -15,6 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
@@ -68,12 +69,12 @@ public class GamePanel extends JPanel {
 		this.toProve = expression;
 		
 		initialize();
-		loadAxioms();
 		
 		ProofState ps;
 		ps = new ProofState(toProve);
 
 		gameManager = new GameManager(this, ps);
+		loadAxioms();
 	}
 
 	private void initialize() {
@@ -296,12 +297,18 @@ public class GamePanel extends JPanel {
 				e.printStackTrace();
 			}
 		}
+		
+		ArrayList<SavedProof> userAxioms = gameManager.getSavedProofs();
+		for (SavedProof e : userAxioms) {
+			throwInListModel.addElement(e);
+		}
+		
 		throwInList.setModel(throwInListModel);
 	}
 	
 	public void addExpressionToAxiomList(Expression exp) {
 //		userTheorems.add(toProve.toString());
-//		stepManager.save();
+		gameManager.getStepManager().save();
 		throwInListModel.addElement(exp);
 	}
 	

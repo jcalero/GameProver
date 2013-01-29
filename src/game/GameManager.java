@@ -30,8 +30,9 @@ public class GameManager {
 	private boolean isReplaying;
 
 	private static ArrayList<GameState> gameList = new ArrayList<GameState>();
+//	private static ArrayList<Expression> userAxioms = new ArrayList<Expression>();
 
-	private ArrayList<SavedProof> savedProofs = new ArrayList<SavedProof>();
+	private static ArrayList<SavedProof> savedProofs = new ArrayList<SavedProof>();
 
 	// TODO: Get rid of this
 	public JLabel rwIn;
@@ -232,4 +233,16 @@ public class GameManager {
 
 		gamePanel.validate();
 	}
+	
+//	public void addUserAxiom(Expression exp) {
+//		userAxioms.add(exp);
+//	}
+//	
+//	public void removeUserAxiom(Expression exp) {
+//		userAxioms.remove(exp);
+//	}
+//	
+//	public ArrayList<Expression> getUserAxioms() {
+//		return userAxioms;
+//	}
 }
