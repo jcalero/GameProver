@@ -234,6 +234,18 @@ public class GameManager {
 		gamePanel.validate();
 	}
 	
+	public void undoFrame() {
+		System.out.println("[UNDO]: Starting undo");
+		setStateToShow(currentDisplayPanel.undo());
+		if (!wasCleanup)
+			stepManager.undo();
+//		if (isReplaying() && replayManager != null) {
+//			replayManager.prev();
+//		}
+		wasCleanup = false;
+		System.out.println("[UNDO]: Undo finished");
+	}
+	
 //	public void addUserAxiom(Expression exp) {
 //		userAxioms.add(exp);
 //	}

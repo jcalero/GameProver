@@ -58,7 +58,7 @@ public class GamePanel extends JPanel {
 	private Expression toProve;
 
 	private String[] axioms = new String[] { "(0+1)=1", "(x+0)=x",
-			"(x+(y+1))=((x+y)+1)", "(x*0)=0", "(x*(y+1))=((x*y)+x)"};
+			"(x+(y+1))=((x+y)+1)", "(x*0)=0", "(x*(y+1))=((x*y)+x)" };
 
 	/**
 	 * Create the panel.
@@ -67,9 +67,9 @@ public class GamePanel extends JPanel {
 		this.mainWindow = mainWindow;
 		this.mainFrame = mainWindow.getMainFrame();
 		this.toProve = expression;
-		
+
 		initialize();
-		
+
 		ProofState ps;
 		ps = new ProofState(toProve);
 
@@ -195,7 +195,8 @@ public class GamePanel extends JPanel {
 		centerPanel.add(proofScrollPane, gbc_proofScrollPane);
 
 		JPanel proofPanel = new JPanel();
-		JLabel lblNewLabel = new JLabel("Here's where the proof should be displayed");
+		JLabel lblNewLabel = new JLabel(
+				"Here's where the proof should be displayed");
 		proofPanel.add(lblNewLabel);
 
 		if (psPanel == null) {
@@ -205,7 +206,8 @@ public class GamePanel extends JPanel {
 		}
 
 		JScrollPane throwInScrollPane = new JScrollPane();
-		throwInScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		throwInScrollPane
+				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		GridBagConstraints gbc_throwInScrollPane = new GridBagConstraints();
 		gbc_throwInScrollPane.fill = GridBagConstraints.BOTH;
 		gbc_throwInScrollPane.gridx = 1;
@@ -249,7 +251,8 @@ public class GamePanel extends JPanel {
 	}
 
 	private void onUndoButtonClicked() {
-
+		gameManager.undoFrame();
+		updateUndoButton();
 	}
 
 	public void setUndoText(String text) {
@@ -284,7 +287,7 @@ public class GamePanel extends JPanel {
 		DonePanel donePanel = new DonePanel(this, gameManager.getTheorem());
 		getProofScrollPane().setViewportView(donePanel);
 	}
-	
+
 	public void loadAxioms() {
 		throwInListModel = new DefaultListModel();
 		for (String s : axioms) {
@@ -297,23 +300,35 @@ public class GamePanel extends JPanel {
 				e.printStackTrace();
 			}
 		}
-		
+
 		ArrayList<SavedProof> userAxioms = gameManager.getSavedProofs();
 		for (SavedProof e : userAxioms) {
 			throwInListModel.addElement(e);
 		}
-		
+
 		throwInList.setModel(throwInListModel);
 	}
-	
+
 	public void addExpressionToAxiomList(Expression exp) {
-//		userTheorems.add(toProve.toString());
+		// userTheorems.add(toProve.toString());
 		gameManager.getStepManager().save();
 		throwInListModel.addElement(exp);
 	}
-	
+
+	private void updateUndoButton() {
+		if (gameManager.getGameList().size() > 1) {
+			btnUndo.setEnabled(true);
+			btnUndo.setText("Undo (" + (gameManager.getGameList().size() - 1)
+					+ ")");
+		} else {
+			btnUndo.setText("Undo");
+			btnUndo.setEnabled(false);
+		}
+	}
+
 	private void listClickHandler(MouseEvent e) {
-		Rectangle r = throwInList.getCellBounds(0, throwInList.getLastVisibleIndex());
+		Rectangle r = throwInList.getCellBounds(0,
+				throwInList.getLastVisibleIndex());
 		int selected = -1;
 
 		if (r != null && r.contains(e.getPoint())) {
@@ -321,7 +336,8 @@ public class GamePanel extends JPanel {
 		}
 
 		if (selected != -1) {
-			SavedProof proof = (SavedProof) throwInListModel.getElementAt(selected);
+			SavedProof proof = (SavedProof) throwInListModel
+					.getElementAt(selected);
 			Expression exp = proof.getExpression();
 
 			boolean theorem = false;
@@ -331,9 +347,10 @@ public class GamePanel extends JPanel {
 				theorem = false;
 
 			// Left mouse clicked and a proof is going on => Throw in
-			if (e.getButton() == MouseEvent.BUTTON1 && gameManager.getGameList().size() > 0) {
+			if (e.getButton() == MouseEvent.BUTTON1
+					&& gameManager.getGameList().size() > 0) {
 				if (exp.containsTermVars()) {
-//					throwIn.setVisible(true);
+					// throwIn.setVisible(true);
 
 					// Operating on chars to preserve brackets
 					char[] charArray = exp.toString().toCharArray();
@@ -352,17 +369,17 @@ public class GamePanel extends JPanel {
 						System.out
 								.println("ERROR: Failed to parse variable with ? added");
 					}
-					LogicStep ls = new LogicStep(Rule.AddAssumVar,
-							gameManager.getCurrentDisplayPanel().getAbsoluteDepth());
+					LogicStep ls = new LogicStep(Rule.AddAssumVar, gameManager
+							.getCurrentDisplayPanel().getAbsoluteDepth());
 					ls.setNewExpression(exp);
 					gameManager.getStepManager().applyRule(ls);
 					gameManager.updateFrame();
 				} else {
 					throwInList.setSelectedIndex(selected);
 					System.out.println("Left clicked on: " + exp);
-//					throwIn.setVisible(true);
-					LogicStep ls = new LogicStep(Rule.AddAssum,
-							gameManager.getCurrentDisplayPanel().getAbsoluteDepth());
+					// throwIn.setVisible(true);
+					LogicStep ls = new LogicStep(Rule.AddAssum, gameManager
+							.getCurrentDisplayPanel().getAbsoluteDepth());
 					ls.setNewExpression(exp);
 					gameManager.getStepManager().applyRule(ls);
 					gameManager.updateFrame();
@@ -386,22 +403,22 @@ public class GamePanel extends JPanel {
 						throwInList.clearSelection();
 						return;
 					} else {
-//						throwIn.setVisible(true);
-						LogicStep ls = new LogicStep(Rule.AddAssum,
-								gameManager.getCurrentDisplayPanel().getAbsoluteDepth());
+						// throwIn.setVisible(true);
+						LogicStep ls = new LogicStep(Rule.AddAssum, gameManager
+								.getCurrentDisplayPanel().getAbsoluteDepth());
 						ls.setNewExpression(exp);
 						gameManager.getStepManager().applyRule(ls);
 						gameManager.updateFrame();
 					}
 					break;
 				case 1:
-//					setGoalHandler(exp);
-//					replayManager = new ReplayManager(this);
-//					replayManager.load(proof);
-//					setReplaying(true);
+					// setGoalHandler(exp);
+					// replayManager = new ReplayManager(this);
+					// replayManager.load(proof);
+					// setReplaying(true);
 					break;
 				case 2:
-//					setGoalHandler(exp);
+					// setGoalHandler(exp);
 					break;
 				default:
 					break;

@@ -46,7 +46,8 @@ public class RewritePanel extends JPanel {
 		
 		JLabel throwInLabel = new JLabel("");
 		throwInLabel.setBorder(new LineBorder(new Color(0, 0, 0)));
-		throwInLabel.setIcon(new ImageIcon(RewritePanel.class.getResource("/gui/images/throw_in_small.png")));
+		ImageIcon throwInIcon = new ImageIcon(RewritePanel.class.getResource("/gui/images/rw_small.png"));
+		throwInLabel.setIcon(throwInIcon);
 		GridBagConstraints gbc_throwInLabel = new GridBagConstraints();
 		gbc_throwInLabel.insets = new Insets(0, 0, 5, 0);
 		gbc_throwInLabel.gridheight = 2;
