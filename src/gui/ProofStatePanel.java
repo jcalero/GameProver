@@ -1,6 +1,6 @@
 package gui;
 
-import game.GameManager;
+import game.Game;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -41,7 +41,7 @@ public class ProofStatePanel extends JPanel implements MouseListener,
 	private URL wrong = getClass().getResource("sounds/wrong.wav");
 	private URL kick = getClass().getResource("sounds/kick.wav");
 
-	public GameManager parent;
+	public Game parent;
 	public ProofState logicState;
 	public StepManager stepManager;
 	private int assumStartX = 10;
@@ -130,11 +130,11 @@ public class ProofStatePanel extends JPanel implements MouseListener,
 	}
 
 	// 2012
-	public ProofStatePanel(GameManager df) {
+	public ProofStatePanel(Game df) {
 		parent = df;
 	}
 
-	public ProofStatePanel(GameManager df, ProofState pf) {
+	public ProofStatePanel(Game df, ProofState pf) {
 		buildRulesToString();
 
 		addMouseListener(this);// 2012 08 for help tips

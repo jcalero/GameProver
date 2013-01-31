@@ -1,14 +1,14 @@
 package logic;
 
-import game.GameManager;
+import game.Game;
 
 public class ReplayManager {
 	private SavedProof proof;
 	private StepManager sm;
-	private GameManager df;
+	private Game df;
 	private int step = 0;
 	
-	public ReplayManager(GameManager df) {
+	public ReplayManager(Game df) {
 		this.df = df;
 		this.sm = new StepManager(df);
 	}

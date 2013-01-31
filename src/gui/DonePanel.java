@@ -1,5 +1,7 @@
 package gui;
 
+import game.Game;
+
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -11,13 +13,13 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import logic.Expression;
-
 public class DonePanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 
+//	private GamePanel gamePanel;
+//	private Expression proved;
+	private Game game;
 	private GamePanel gamePanel;
-	private Expression proved;
 
 	private JButton btnAddToAxioms;
 	private JButton btnSaveForReplay;
@@ -25,9 +27,10 @@ public class DonePanel extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-	public DonePanel(GamePanel gamePanel, Expression provedExpression) {
-		this.gamePanel = gamePanel;
-		this.proved = provedExpression;
+	public DonePanel(Game game, GamePanel parent) {
+		this.game = game;
+//		this.proved = game.getTheorem();
+		this.gamePanel = parent;
 
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] { 0, 180, 0, 0 };
@@ -101,7 +104,8 @@ public class DonePanel extends JPanel {
 	}
 
 	private void axiomsButtonClickedEvent() {
-		gamePanel.addExpressionToAxiomList(proved);
+		game.save();
+		gamePanel.reloadThrowInList();
 		btnAddToAxioms.setEnabled(false);
 		btnAddToAxioms.setText("Done!");
 	}

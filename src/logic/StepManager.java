@@ -11,11 +11,11 @@
  */
 package logic;
 
-import game.GameManager;
+import game.Game;
 
 public class StepManager {
 
-	private GameManager window;
+	private Game window;
 	private static SavedProof proof;
 
 	/**
@@ -24,7 +24,7 @@ public class StepManager {
 	 * @param df
 	 *            Reference to the main application window.
 	 */
-	public StepManager(GameManager df) {
+	public StepManager(Game df) {
 		this.window = df;
 	}
 
@@ -137,20 +137,19 @@ public class StepManager {
 		case NotAssumContradiction:
 			if (ls.isBinary()) {
 				success = sourceState.notAssumContradictionRule(targetState,
-						leftExpression,
-						rightExpression);
+						leftExpression, rightExpression);
 				consistentLogicStep = true;
 			}
-			break;	
+			break;
 		case LogicalEqAssum:
 			if (ls.isUnary()) {
-				success = sourceState.logicalEqAssum (leftExpression);
+				success = sourceState.logicalEqAssum(leftExpression);
 				consistentLogicStep = true;
 			}
 			break;
 		case LogicalEqGoal:
 			if (ls.isUnary()) {
-				success = sourceState.logicalEqGoal (leftExpression);
+				success = sourceState.logicalEqGoal(leftExpression);
 				consistentLogicStep = true;
 			}
 			break;
@@ -428,6 +427,12 @@ public class StepManager {
 		System.err.println(error);
 	}
 
+	/**
+	 * Prints a formatted error message with information about the Rule.
+	 * 
+	 * @param rule
+	 *            - The Rule the error message should specify.
+	 */
 	private void printRuleError(Rule rule) {
 		String error = "[STEP MANAGER]: Could not apply rule \"" + rule
 				+ "\", conditions not met.";

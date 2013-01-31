@@ -18,7 +18,7 @@ import logic.ProofState;
 import logic.SavedProof;
 import logic.StepManager;
 
-public class GameManager {
+public class Game {
 
 	private GamePanel gamePanel;
 	private ProofState proofState;
@@ -26,13 +26,14 @@ public class GameManager {
 	private ProofStatePanel currentDisplayPanel;
 	private StepManager stepManager;
 	private Expression theorem;
+	private SaveManager saveManager;
 
 	private boolean isReplaying;
 
 	private static ArrayList<GameState> gameList = new ArrayList<GameState>();
 //	private static ArrayList<Expression> userAxioms = new ArrayList<Expression>();
 
-	private static ArrayList<SavedProof> savedProofs = new ArrayList<SavedProof>();
+//	private static ArrayList<SavedProof> savedProofs = new ArrayList<SavedProof>();
 
 	// TODO: Get rid of this
 	public JLabel rwIn;
@@ -40,14 +41,16 @@ public class GameManager {
 	// TODO: Make set/getters
 	public boolean wasCleanup;
 
-	public GameManager(GamePanel gamePanel, ProofState initialState) {
+	public Game(GamePanel gamePanel, ProofState initialState) {
 		this.gamePanel = gamePanel;
 		this.proofState = initialState;
 		this.theorem = initialState.getGoal(0);
+
+		saveManager = new SaveManager(this);
 		initialiseGoal(theorem);
 	}
 
-	public GameManager(ReplayPanel replayPanel) {
+	public Game(ReplayPanel replayPanel) {
 		this.replayPanel = replayPanel;
 	}
 
@@ -105,11 +108,15 @@ public class GameManager {
 	}
 
 	public ArrayList<SavedProof> getSavedProofs() {
-		return savedProofs;
+		return saveManager.getSavedProofs();
 	}
 	
 	public StepManager getStepManager() {
 		return stepManager;
+	}
+	
+	public SaveManager getSaveManager() {
+		return saveManager;
 	}
 	
 	public Expression getTheorem() {
@@ -136,6 +143,10 @@ public class GameManager {
 	// TODO: Move this to "Game" specific object.
 	public boolean isDone() {
 		return currentDisplayPanel.isDone();
+	}
+	
+	public void save() {
+		saveManager.saveLocally(stepManager.getCurrentProof());
 	}
 
 	// TODO: Move this to "Game" specific object.

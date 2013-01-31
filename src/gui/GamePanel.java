@@ -1,6 +1,6 @@
 package gui;
 
-import game.GameManager;
+import game.Game;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -45,7 +45,7 @@ public class GamePanel extends JPanel {
 	private JFrame mainFrame;
 	private ProofStatePanel psPanel;
 	private RewriteFrame rewriteFrame;
-	private GameManager gameManager;
+	private Game gameManager;
 
 	private JButton btnUndo;
 	private JButton btnCleanup;
@@ -68,12 +68,14 @@ public class GamePanel extends JPanel {
 		this.mainFrame = mainWindow.getMainFrame();
 		this.toProve = expression;
 
+		rewriteFrame = new RewriteFrame(mainFrame);
+
 		initialize();
 
 		ProofState ps;
 		ps = new ProofState(toProve);
 
-		gameManager = new GameManager(this, ps);
+		gameManager = new Game(this, ps);
 		loadAxioms();
 	}
 
@@ -246,7 +248,6 @@ public class GamePanel extends JPanel {
 	}
 
 	private void onCleanupButtonClicked() {
-		rewriteFrame = new RewriteFrame(mainFrame);
 		rewriteFrame.setVisible(true);
 	}
 
@@ -284,7 +285,7 @@ public class GamePanel extends JPanel {
 	}
 
 	public void loadDonePanel() {
-		DonePanel donePanel = new DonePanel(this, gameManager.getTheorem());
+		DonePanel donePanel = new DonePanel(gameManager, this);
 		getProofScrollPane().setViewportView(donePanel);
 	}
 
@@ -309,11 +310,26 @@ public class GamePanel extends JPanel {
 		throwInList.setModel(throwInListModel);
 	}
 
-	public void addExpressionToAxiomList(Expression exp) {
-		// userTheorems.add(toProve.toString());
-		gameManager.getStepManager().save();
-		throwInListModel.addElement(exp);
+	public void reloadThrowInList() {
+		ArrayList<SavedProof> savedProofs = gameManager.getSaveManager()
+				.getSavedProofs();
+		if (savedProofs.size() < throwInListModel.size()) {
+			// TODO: Make this more efficient by not using loadAxioms.
+			// E.g. Check for containment of savedProof in throwInListModel
+			// and only delete the ones that are not contained in savedProof.
+			loadAxioms();
+		} else if (savedProofs.size() > throwInListModel.size()) {
+			for (int i = throwInListModel.size(); i < savedProofs.size(); i++) {
+				throwInListModel.addElement(savedProofs.get(i));
+			}
+		}
 	}
+
+//	public void addExpressionToAxiomList(Expression exp) {
+//		// userTheorems.add(toProve.toString());
+//		gameManager.getStepManager().save();
+//		throwInListModel.addElement(exp);
+//	}
 
 	private void updateUndoButton() {
 		if (gameManager.getGameList().size() > 1) {

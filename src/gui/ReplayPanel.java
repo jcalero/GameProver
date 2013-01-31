@@ -1,6 +1,6 @@
 package gui;
 
-import game.GameManager;
+import game.Game;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -57,7 +57,7 @@ public class ReplayPanel extends JPanel {
 			}
 			if (ps != null) {
 				System.out.println(ps);
-				GameManager df = new GameManager(this);
+				Game df = new Game(this);
 				System.out.println(ps.getProofStateList());
 				psPanel = new ProofStatePanel(df, ps);
 			}
