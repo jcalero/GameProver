@@ -1,5 +1,7 @@
 package gui;
 
+import game.StartModel;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -24,6 +26,7 @@ public class StartPanel extends JPanel {
 
 	private JFrame mainFrame;
 	private MainWindow mainWindow;
+	private StartModel startModel;
 	private NewProofDialog newProofDialog;
 	private LoadProofDialog loadProofDialog;
 	private LoadReplayDialog loadReplayDialog;
@@ -33,7 +36,8 @@ public class StartPanel extends JPanel {
 	/**
 	 * Create the frame.
 	 */
-	public StartPanel(MainWindow mainWindow) {
+	public StartPanel(MainWindow mainWindow, StartModel startModel) {
+		this.startModel = startModel;
 		this.mainWindow = mainWindow;
 		this.mainFrame = mainWindow.getMainFrame();
 		initialize();

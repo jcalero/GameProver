@@ -1,10 +1,15 @@
 package gui;
 
+import game.Game;
+import game.SaveManager;
+import game.StartModel;
+
 import java.awt.Dimension;
 
 import javax.swing.JFrame;
 
 import logic.Expression;
+import logic.ProofState;
 
 /**
  * @author Jakob Calero
@@ -16,12 +21,15 @@ public class MainWindow {
 	private static final int minX = 800;
 	private static final int minY = 600;
 	
-	public JFrame mainFrame;
+	private JFrame mainFrame;
+	
+	private SaveManager saveManager;
 
 	/**
 	 * Main window constructor. Builds the panel and all its content.
 	 */
-	public MainWindow() {
+	public MainWindow(SaveManager saveManager) {
+		this.saveManager = saveManager;
 		initialize();
 	}
 	
@@ -53,13 +61,24 @@ public class MainWindow {
 	}
 	
 	public void loadGamePanel(Expression expression) {
+		//TODO: Move this to start model
+		ProofState ps;
+		ps = new ProofState(expression);
+		
 		GamePanel gp = new GamePanel(this, expression);
+		
+		//TODO: Move this to start model
+		Game game = new Game(gp, ps, saveManager);
+		gp.setGame(game);
+		gp.loadAxioms();
+		
 		mainFrame.setContentPane(gp);
 		mainFrame.validate();
 	}
 	
 	public void loadStartPanel() {
-		StartPanel sp = new StartPanel(this);
+		StartModel sm = new StartModel(saveManager);
+		StartPanel sp = new StartPanel(this, sm);
 		mainFrame.setContentPane(sp);
 		mainFrame.validate();
 	}

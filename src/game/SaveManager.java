@@ -13,12 +13,16 @@ import logic.SavedProof;
  */
 public class SaveManager {
 	
-	private Game game;
+//	private Game game;
 	
-	private static ArrayList<SavedProof> savedProofs = new ArrayList<SavedProof>();
+	private ArrayList<SavedProof> savedProofs = new ArrayList<SavedProof>();
 	
-	public SaveManager(Game game) {
-		this.game = game;
+//	public SaveManager(Game game) {
+//		this.game = game;
+//	}
+	
+	public SaveManager() {
+		
 	}
 	
 	public void saveLocally(SavedProof proof) {

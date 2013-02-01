@@ -72,11 +72,18 @@ public class GamePanel extends JPanel {
 
 		initialize();
 
-		ProofState ps;
-		ps = new ProofState(toProve);
+//		ProofState ps;
+//		ps = new ProofState(toProve);
 
-		gameManager = new Game(this, ps);
-		loadAxioms();
+//		gameManager = new Game(this, ps);
+//		gameManager = game;
+//		loadAxioms();
+	}
+	
+	//TODO: GET RID OF THIS SHIT! Instead add Game to the constructor of GamePanel.
+	// Can only do this once "Game" is constructed without any references to GamePanel.
+	public void setGame(Game game) {
+		gameManager = game;
 	}
 
 	private void initialize() {

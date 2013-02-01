@@ -41,12 +41,12 @@ public class Game {
 	// TODO: Make set/getters
 	public boolean wasCleanup;
 
-	public Game(GamePanel gamePanel, ProofState initialState) {
+	public Game(GamePanel gamePanel, ProofState initialState, SaveManager saveManager) {
 		this.gamePanel = gamePanel;
 		this.proofState = initialState;
 		this.theorem = initialState.getGoal(0);
-
-		saveManager = new SaveManager(this);
+		this.saveManager = saveManager;
+		
 		initialiseGoal(theorem);
 	}
 
@@ -220,6 +220,8 @@ public class Game {
 
 		stepManager = new StepManager(this);
 		stepManager.start(proofState.getGoal(0));
+		
+		//gamePanel.loadAxioms();
 
 		// btnRepo.setEnabled(true);
 		// btnReplay.setEnabled(true);
