@@ -284,7 +284,7 @@ public class GamePanel extends JPanel {
 	}
 
 	private void onCleanupButtonClicked() {
-		rewriteFrame.setVisible(true);
+		game.cleanupHandler();
 	}
 
 	private void onUndoButtonClicked() {

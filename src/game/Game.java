@@ -151,6 +151,45 @@ public class Game {
 	public void save() {
 		saveManager.saveLocally(stepManager.getCurrentProof());
 	}
+	
+	public void cleanupHandler() {
+		cleanup();
+		currentDisplayPanel.record();
+		updateFrame();
+	}
+	
+	public void cleanup() {
+		ProofStatePanel panel = currentDisplayPanel;
+		ProofState proofState = panel.logicState;
+		int subStateToShowIndex = -1;
+		boolean doCleanup = false;
+		if (proofState.isEmptyState()) {
+			wasCleanup = true;
+			doCleanup = true;
+			proofState.setHideFlag(true);
+		}
+
+		for (int i = 0; i < proofState.getSubstates().size(); i++) {
+			ProofState subState = proofState.getSubstate(i);
+			boolean oldSubStateFlag = subState.getHideFlag();
+			subState.cleanup();
+			if (subState.getHideFlag() && !oldSubStateFlag) {
+				doCleanup = true;
+			}
+			if (!subState.getHideFlag() && subStateToShowIndex == -1) {
+				subStateToShowIndex = i;
+			}
+		}
+
+		if (doCleanup) {
+			if (subStateToShowIndex == -1) {
+				setStateToShow(proofState);
+			} else {
+				setStateToShow(proofState.getSubstate(subStateToShowIndex));
+			}
+		}
+	}
+
 
 	// TODO: Move this to "Game" specific object.
 	public void doneBehaviour() {
