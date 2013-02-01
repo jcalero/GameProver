@@ -10,8 +10,10 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -30,6 +32,7 @@ public class StartPanel extends JPanel {
 	private NewProofDialog newProofDialog;
 	private LoadProofDialog loadProofDialog;
 	private LoadReplayDialog loadReplayDialog;
+	private JFileChooser fileChooser;
 
 	// private JPanel contentPane;
 
@@ -40,6 +43,7 @@ public class StartPanel extends JPanel {
 		this.startModel = startModel;
 		this.mainWindow = mainWindow;
 		this.mainFrame = mainWindow.getMainFrame();
+		fileChooser = new JFileChooser();
 		initialize();
 	}
 
@@ -200,7 +204,10 @@ public class StartPanel extends JPanel {
 	}
 	
 	protected void showLoadFromFileBrowser() {
-		//TODO: Actually add a file browser here.
-		startModel.loadDefaultDataSet();
+		int returnVal = fileChooser.showOpenDialog(this);
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			File file = fileChooser.getSelectedFile(); 
+			startModel.loadDataSetFromFile(file);
+		}
 	}
 }

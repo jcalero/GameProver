@@ -14,11 +14,11 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 
+import logic.SavedProof;
+
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
-
-import logic.SavedProof;
 
 /**
  * @author Jakob
@@ -30,11 +30,6 @@ public class SaveManager {
 			"(x+(y+1))=((x+y)+1)", "(x*0)=0", "(x*(y+1))=((x*y)+x)" };
 	private ArrayList<SavedProof> savedProofs = new ArrayList<SavedProof>();
 	private String defaultFileName = "defaultSave.xml";
-
-	
-	public SaveManager() {
-		
-	}
 	
 	public void saveLocally(SavedProof proof) {
 		savedProofs.add(proof);
@@ -95,17 +90,6 @@ public class SaveManager {
 
 		// TODO: Add a sanity check here and possibly version check for the
 		// load data.
-
-//		userTheorems.clear();
-//
-//		if (listModel.size() > theorems.length) {
-//			listModel.removeRange(theorems.length, listModel.size() - 1);
-//		}
-//
-//		for (int i = 0; i < savedProofs.size(); i++) {
-//			userTheorems.add(savedProofs.get(i).toString());
-//			listModel.addElement(savedProofs.get(i));
-//		}
 
 		System.out.println("[DATA MANAGER]: Loaded " + savedProofs.size()
 				+ " proofs successfully");

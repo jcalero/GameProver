@@ -15,11 +15,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
 import java.util.ArrayList;
 
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -45,7 +47,8 @@ public class GamePanel extends JPanel {
 	private ProofStatePanel psPanel;
 	private RewriteFrame rewriteFrame;
 	private Game game;
-
+	
+	private JFileChooser fileChooser;
 	private JButton btnUndo;
 	private JButton btnCleanup;
 	private JScrollPane proofScrollPane;
@@ -63,7 +66,8 @@ public class GamePanel extends JPanel {
 		this.mainWindow = mainWindow;
 		this.mainFrame = mainWindow.getMainFrame();
 		this.toProve = expression;
-
+		
+		fileChooser = new JFileChooser();
 		rewriteFrame = new RewriteFrame(mainFrame, this);
 
 		initialize();
@@ -289,12 +293,20 @@ public class GamePanel extends JPanel {
 	}
 	
 	private void onSaveButtonClicked() {
-		game.saveAxiomListToDefault();
+		int returnVal = fileChooser.showSaveDialog(this);
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			File file = fileChooser.getSelectedFile();
+			game.saveAxiomListToFile(file);
+		}
 	}
 	
 	private void onLoadButtonClicked() {
-		game.loadAxiomListFromDefault();
-		loadAxioms();
+		int returnVal = fileChooser.showOpenDialog(this);
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			File file = fileChooser.getSelectedFile();
+			game.loadAxiomListFromFile(file);
+			reloadThrowInList();
+		}
 	}
 
 	public void setUndoText(String text) {
