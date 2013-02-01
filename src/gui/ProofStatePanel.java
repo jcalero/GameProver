@@ -1408,7 +1408,7 @@ public class ProofStatePanel extends JPanel implements MouseListener,
 		else {
 			MyLabel myclicked = (MyLabel) clicked;
 			myclicked.fullText.setForeground(Color.BLUE);
-			parent.rwIn.setVisible(true);
+//			parent.rwIn.setVisible(true);
 			Expression rwexp = logicState.getAssum(assumNum);
 			parent.setRWexp(rwexp, "up");
 			parent.getrwframe().isassum = true;
@@ -1429,7 +1429,7 @@ public class ProofStatePanel extends JPanel implements MouseListener,
 		else {
 			MyLabel myclicked = (MyLabel) clicked;
 			myclicked.fullText.setForeground(Color.BLUE);
-			parent.rwIn.setVisible(true);
+//			parent.rwIn.setVisible(true);
 			parent.getrwframe().isassum = false;
 			parent.getrwframe().origExpIndex = goalNum;
 			parent.getrwframe().proofState = logicState;

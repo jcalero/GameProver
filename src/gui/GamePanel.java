@@ -68,7 +68,7 @@ public class GamePanel extends JPanel {
 		this.mainFrame = mainWindow.getMainFrame();
 		this.toProve = expression;
 
-		rewriteFrame = new RewriteFrame(mainFrame);
+		rewriteFrame = new RewriteFrame(mainFrame, this);
 
 		initialize();
 
@@ -84,6 +84,9 @@ public class GamePanel extends JPanel {
 	// Can only do this once "Game" is constructed without any references to GamePanel.
 	public void setGame(Game game) {
 		gameManager = game;
+	}
+	public Game getGame() {
+		return gameManager;
 	}
 
 	private void initialize() {

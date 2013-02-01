@@ -7,6 +7,7 @@ import game.StartModel;
 import java.awt.Dimension;
 
 import javax.swing.JFrame;
+import javax.swing.ToolTipManager;
 
 import logic.Expression;
 import logic.ProofState;
@@ -41,6 +42,7 @@ public class MainWindow {
 		mainFrame.setTitle("GameProver v2");
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setWindowBounds();
+		ToolTipManager.sharedInstance().setInitialDelay(150);
 		
 		loadStartPanel();
 	}

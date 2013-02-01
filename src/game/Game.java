@@ -134,6 +134,7 @@ public class Game {
 
 	public void setRWexp(Expression exp, String type) {
 		gamePanel.getRewriteFrame().setdispExp(exp, type);
+		gamePanel.getRewriteFrame().setVisible(true);
 	}
 
 	public boolean isReplaying() {
