@@ -1,6 +1,7 @@
 package game;
 
 import java.awt.EventQueue;
+import java.io.FileNotFoundException;
 
 import gui.MainWindow;
 
@@ -20,6 +21,11 @@ public class Main {
 				try {
 					SaveManager saveManager = new SaveManager();
 					MainWindow window = new MainWindow(saveManager);
+					try {
+						saveManager.loadAutoSaveFile();
+					} catch (FileNotFoundException e) {
+						e.printStackTrace();
+					}
 					window.getMainFrame().setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();

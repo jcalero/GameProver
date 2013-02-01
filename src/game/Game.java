@@ -264,7 +264,7 @@ public class Game {
 	
 	public void saveAxiomListToDefault() {
 		try {
-			saveManager.saveDefaultFile();
+			saveManager.saveAutoSaveFile();
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
 		} catch (IOException e1) {
@@ -284,7 +284,7 @@ public class Game {
 	
 	public void loadAxiomListFromDefault() {
 		try {
-			saveManager.loadDefaultFile();
+			saveManager.loadAutoSaveFile();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}

@@ -24,20 +24,6 @@ public class StartModel {
 	 */
 	public StartModel(SaveManager saveManager) {
 		this.saveManager = saveManager;
-		loadLastAxiomList();
-	}
-
-	private void loadLastAxiomList() {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	public void loadDefaultDataSet() {
-		try {
-			saveManager.loadDefaultFile();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
 	}
 	
 	public void loadDataSetFromFile(File file) {

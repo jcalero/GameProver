@@ -29,7 +29,7 @@ public class SaveManager {
 	private String[] axioms = new String[] { "(0+1)=1", "(x+0)=x",
 			"(x+(y+1))=((x+y)+1)", "(x*0)=0", "(x*(y+1))=((x*y)+x)" };
 	private ArrayList<SavedProof> savedProofs = new ArrayList<SavedProof>();
-	private String defaultFileName = "defaultSave.xml";
+	private String autoSaveFileName = "autoSave.xml";
 	
 	public void saveLocally(SavedProof proof) {
 		savedProofs.add(proof);
@@ -44,15 +44,15 @@ public class SaveManager {
 		return axioms;
 	}
 	
-	public void loadDefaultFile() throws FileNotFoundException {
+	public void loadAutoSaveFile() throws FileNotFoundException {
 		File input = new File(getUserDataDirectory() + File.separator
-				+ getDefaultFileName());
+				+ getAutoSaveFileName());
 		loadFromFile(input);
 	}
 	
-	public void saveDefaultFile() throws IOException {
+	public void saveAutoSaveFile() throws IOException {
 		File output = new File(getUserDataDirectory() + File.separator
-				+ getDefaultFileName());
+				+ getAutoSaveFileName());
 		saveToFile(output);
 	}
 	
@@ -100,8 +100,8 @@ public class SaveManager {
 				+ File.separator;
 	}
 
-	public String getDefaultFileName() {
-		return defaultFileName;
+	public String getAutoSaveFileName() {
+		return autoSaveFileName;
 	}
 
 	public static boolean toXML(Object object, File file) {

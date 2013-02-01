@@ -5,6 +5,9 @@ import game.SaveManager;
 import game.StartModel;
 
 import java.awt.Dimension;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.IOException;
 
 import javax.swing.JFrame;
 import javax.swing.ToolTipManager;
@@ -32,6 +35,12 @@ public class MainWindow {
 	public MainWindow(SaveManager saveManager) {
 		this.saveManager = saveManager;
 		initialize();
+		mainFrame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent event) {
+				autoSave();
+			}
+		});
 	}
 	
 	/**
@@ -56,6 +65,14 @@ public class MainWindow {
 		mainFrame.setMinimumSize(new Dimension(minX, minY));
 		mainFrame.setLocationRelativeTo(null);
 		mainFrame.setSize(minX, minY);
+	}
+	
+	private void autoSave() {
+		try {
+			saveManager.saveAutoSaveFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public JFrame getMainFrame() {
