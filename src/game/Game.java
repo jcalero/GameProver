@@ -6,6 +6,9 @@ import gui.ReplayPanel;
 import gui.RewriteFrame;
 
 import java.awt.Dimension;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -258,6 +261,42 @@ public class Game {
 //		}
 		wasCleanup = false;
 		System.out.println("[UNDO]: Undo finished");
+	}
+	
+	public void saveAxiomListToDefault() {
+		try {
+			saveManager.saveDefaultFile();
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+	}
+	
+	public void saveAxiomListToFile(File file) {
+		try {
+			saveManager.saveToFile(file);
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+	}
+	
+	public void loadAxiomListFromDefault() {
+		try {
+			saveManager.loadDefaultFile();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void loadAxiomListFromFile(File file) {
+		try {
+			saveManager.loadFromFile(file);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 	
 //	public void addUserAxiom(Expression exp) {

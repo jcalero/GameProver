@@ -95,10 +95,10 @@ public class GamePanel extends JPanel {
 		JPanel topPanel = new JPanel();
 		add(topPanel, BorderLayout.NORTH);
 		GridBagLayout gbl_topPanel = new GridBagLayout();
-		gbl_topPanel.columnWidths = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };
+		gbl_topPanel.columnWidths = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 		gbl_topPanel.rowHeights = new int[] { 0, 0, 0, 0 };
 		gbl_topPanel.columnWeights = new double[] { 0.0, 0.0, 0.0, 1.0, 0.0,
-				0.0, 1.0, Double.MIN_VALUE };
+				0.0, 0.0, 1.0, Double.MIN_VALUE };
 		gbl_topPanel.rowWeights = new double[] { 1.0, 0.0, 1.0,
 				Double.MIN_VALUE };
 		topPanel.setLayout(gbl_topPanel);
@@ -153,12 +153,12 @@ public class GamePanel extends JPanel {
 				onCleanupButtonClicked();
 			}
 		});
-		GridBagConstraints gbc_btnNewButton_1 = new GridBagConstraints();
-		gbc_btnNewButton_1.fill = GridBagConstraints.HORIZONTAL;
-		gbc_btnNewButton_1.insets = new Insets(0, 0, 5, 5);
-		gbc_btnNewButton_1.gridx = 5;
-		gbc_btnNewButton_1.gridy = 0;
-		topPanel.add(btnCleanup, gbc_btnNewButton_1);
+		GridBagConstraints gbc_btnCleanup = new GridBagConstraints();
+		gbc_btnCleanup.fill = GridBagConstraints.HORIZONTAL;
+		gbc_btnCleanup.insets = new Insets(0, 0, 5, 5);
+		gbc_btnCleanup.gridx = 5;
+		gbc_btnCleanup.gridy = 0;
+		topPanel.add(btnCleanup, gbc_btnCleanup);
 
 		btnUndo = new JButton("Undo");
 		btnUndo.addActionListener(new ActionListener() {
@@ -166,12 +166,38 @@ public class GamePanel extends JPanel {
 				onUndoButtonClicked();
 			}
 		});
+		
+		JButton btnSave = new JButton("Save...");
+		btnSave.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				onSaveButtonClicked();
+			}
+		});
+		GridBagConstraints gbc_btnSave = new GridBagConstraints();
+		gbc_btnSave.fill = GridBagConstraints.BOTH;
+		gbc_btnSave.insets = new Insets(0, 0, 5, 5);
+		gbc_btnSave.gridx = 6;
+		gbc_btnSave.gridy = 0;
+		topPanel.add(btnSave, gbc_btnSave);
 		GridBagConstraints gbc_btnUndo = new GridBagConstraints();
 		gbc_btnUndo.fill = GridBagConstraints.HORIZONTAL;
 		gbc_btnUndo.insets = new Insets(0, 0, 5, 5);
 		gbc_btnUndo.gridx = 5;
 		gbc_btnUndo.gridy = 1;
 		topPanel.add(btnUndo, gbc_btnUndo);
+		
+		JButton btnLoad = new JButton("Load...");
+		btnLoad.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				onLoadButtonClicked();
+			}
+		});
+		GridBagConstraints gbc_btnLoad = new GridBagConstraints();
+		gbc_btnLoad.fill = GridBagConstraints.BOTH;
+		gbc_btnLoad.insets = new Insets(0, 0, 5, 5);
+		gbc_btnLoad.gridx = 6;
+		gbc_btnLoad.gridy = 1;
+		topPanel.add(btnLoad, gbc_btnLoad);
 
 		JPanel bottomPanel = new JPanel();
 		FlowLayout flowLayout = (FlowLayout) bottomPanel.getLayout();
@@ -264,6 +290,15 @@ public class GamePanel extends JPanel {
 	private void onUndoButtonClicked() {
 		gameManager.undoFrame();
 		updateUndoButton();
+	}
+	
+	private void onSaveButtonClicked() {
+		gameManager.saveAxiomListToDefault();
+	}
+	
+	private void onLoadButtonClicked() {
+		gameManager.loadAxiomListFromDefault();
+		loadAxioms();
 	}
 
 	public void setUndoText(String text) {
