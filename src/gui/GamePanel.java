@@ -32,7 +32,6 @@ import javax.swing.border.LineBorder;
 
 import logic.Expression;
 import logic.LogicStep;
-import logic.ProofState;
 import logic.Rule;
 import logic.SavedProof;
 import parser.MyExpressionParser;
@@ -45,7 +44,7 @@ public class GamePanel extends JPanel {
 	private JFrame mainFrame;
 	private ProofStatePanel psPanel;
 	private RewriteFrame rewriteFrame;
-	private Game gameManager;
+	private Game game;
 
 	private JButton btnUndo;
 	private JButton btnCleanup;
@@ -56,9 +55,6 @@ public class GamePanel extends JPanel {
 	private DefaultListModel throwInListModel;
 
 	private Expression toProve;
-
-	private String[] axioms = new String[] { "(0+1)=1", "(x+0)=x",
-			"(x+(y+1))=((x+y)+1)", "(x*0)=0", "(x*(y+1))=((x*y)+x)" };
 
 	/**
 	 * Create the panel.
@@ -83,10 +79,10 @@ public class GamePanel extends JPanel {
 	//TODO: GET RID OF THIS SHIT! Instead add Game to the constructor of GamePanel.
 	// Can only do this once "Game" is constructed without any references to GamePanel.
 	public void setGame(Game game) {
-		gameManager = game;
+		this.game = game;
 	}
 	public Game getGame() {
-		return gameManager;
+		return game;
 	}
 
 	private void initialize() {
@@ -288,16 +284,16 @@ public class GamePanel extends JPanel {
 	}
 
 	private void onUndoButtonClicked() {
-		gameManager.undoFrame();
+		game.undoFrame();
 		updateUndoButton();
 	}
 	
 	private void onSaveButtonClicked() {
-		gameManager.saveAxiomListToDefault();
+		game.saveAxiomListToDefault();
 	}
 	
 	private void onLoadButtonClicked() {
-		gameManager.loadAxiomListFromDefault();
+		game.loadAxiomListFromDefault();
 		loadAxioms();
 	}
 
@@ -330,13 +326,13 @@ public class GamePanel extends JPanel {
 	}
 
 	public void loadDonePanel() {
-		DonePanel donePanel = new DonePanel(gameManager, this);
+		DonePanel donePanel = new DonePanel(game, this);
 		getProofScrollPane().setViewportView(donePanel);
 	}
 
 	public void loadAxioms() {
 		throwInListModel = new DefaultListModel();
-		for (String s : axioms) {
+		for (String s : game.getBaseAxioms()) {
 			Expression exp;
 			try {
 				exp = MyExpressionParser.parse(s);
@@ -347,7 +343,7 @@ public class GamePanel extends JPanel {
 			}
 		}
 
-		ArrayList<SavedProof> userAxioms = gameManager.getSavedProofs();
+		ArrayList<SavedProof> userAxioms = game.getSavedProofs();
 		for (SavedProof e : userAxioms) {
 			throwInListModel.addElement(e);
 		}
@@ -356,7 +352,7 @@ public class GamePanel extends JPanel {
 	}
 
 	public void reloadThrowInList() {
-		ArrayList<SavedProof> savedProofs = gameManager.getSaveManager()
+		ArrayList<SavedProof> savedProofs = game.getSaveManager()
 				.getSavedProofs();
 		if (savedProofs.size() < throwInListModel.size()) {
 			// TODO: Make this more efficient by not using loadAxioms.
@@ -377,9 +373,9 @@ public class GamePanel extends JPanel {
 //	}
 
 	private void updateUndoButton() {
-		if (gameManager.getGameList().size() > 1) {
+		if (game.getGameList().size() > 1) {
 			btnUndo.setEnabled(true);
-			btnUndo.setText("Undo (" + (gameManager.getGameList().size() - 1)
+			btnUndo.setText("Undo (" + (game.getGameList().size() - 1)
 					+ ")");
 		} else {
 			btnUndo.setText("Undo");
@@ -402,14 +398,14 @@ public class GamePanel extends JPanel {
 			Expression exp = proof.getExpression();
 
 			boolean theorem = false;
-			if (selected < axioms.length)
+			if (selected < game.getBaseAxioms().length)
 				theorem = true;
 			else
 				theorem = false;
 
 			// Left mouse clicked and a proof is going on => Throw in
 			if (e.getButton() == MouseEvent.BUTTON1
-					&& gameManager.getGameList().size() > 0) {
+					&& game.getGameList().size() > 0) {
 				if (exp.containsTermVars()) {
 					// throwIn.setVisible(true);
 
@@ -430,20 +426,20 @@ public class GamePanel extends JPanel {
 						System.out
 								.println("ERROR: Failed to parse variable with ? added");
 					}
-					LogicStep ls = new LogicStep(Rule.AddAssumVar, gameManager
+					LogicStep ls = new LogicStep(Rule.AddAssumVar, game
 							.getCurrentDisplayPanel().getAbsoluteDepth());
 					ls.setNewExpression(exp);
-					gameManager.getStepManager().applyRule(ls);
-					gameManager.updateFrame();
+					game.getStepManager().applyRule(ls);
+					game.updateFrame();
 				} else {
 					throwInList.setSelectedIndex(selected);
 					System.out.println("Left clicked on: " + exp);
 					// throwIn.setVisible(true);
-					LogicStep ls = new LogicStep(Rule.AddAssum, gameManager
+					LogicStep ls = new LogicStep(Rule.AddAssum, game
 							.getCurrentDisplayPanel().getAbsoluteDepth());
 					ls.setNewExpression(exp);
-					gameManager.getStepManager().applyRule(ls);
-					gameManager.updateFrame();
+					game.getStepManager().applyRule(ls);
+					game.updateFrame();
 				}
 			}
 			// Right mouse clicked and not clicked on a theorem => Menu
@@ -460,16 +456,16 @@ public class GamePanel extends JPanel {
 								options[2]);
 				switch (n) {
 				case 0:
-					if (gameManager.getGameList().size() < 1) {
+					if (game.getGameList().size() < 1) {
 						throwInList.clearSelection();
 						return;
 					} else {
 						// throwIn.setVisible(true);
-						LogicStep ls = new LogicStep(Rule.AddAssum, gameManager
+						LogicStep ls = new LogicStep(Rule.AddAssum, game
 								.getCurrentDisplayPanel().getAbsoluteDepth());
 						ls.setNewExpression(exp);
-						gameManager.getStepManager().applyRule(ls);
-						gameManager.updateFrame();
+						game.getStepManager().applyRule(ls);
+						game.updateFrame();
 					}
 					break;
 				case 1:

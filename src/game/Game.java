@@ -299,6 +299,10 @@ public class Game {
 		}
 	}
 	
+	public String[] getBaseAxioms() {
+		return saveManager.getAxioms();
+	}
+	
 //	public void addUserAxiom(Expression exp) {
 //		userAxioms.add(exp);
 //	}

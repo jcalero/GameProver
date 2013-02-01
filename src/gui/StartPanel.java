@@ -122,6 +122,11 @@ public class StartPanel extends JPanel {
 		centerPanel.add(btnNewButton, gbc_btnNewButton);
 
 		JButton btnLoadSetFrom = new JButton("Load From File...");
+		btnLoadSetFrom.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				showLoadFromFileBrowser();
+			}
+		});
 		btnLoadSetFrom.setPreferredSize(new Dimension(140, 40));
 		GridBagConstraints gbc_btnLoadSetFrom = new GridBagConstraints();
 		gbc_btnLoadSetFrom.fill = GridBagConstraints.HORIZONTAL;
@@ -181,8 +186,9 @@ public class StartPanel extends JPanel {
 
 	protected void showLoadProofBrowser() {
 		if (loadProofDialog == null) {
-			loadProofDialog = new LoadProofDialog(mainWindow, mainFrame);
+			loadProofDialog = new LoadProofDialog(mainWindow, mainFrame, startModel);
 		}
+		loadProofDialog.reload();
 		loadProofDialog.setVisible(true);
 	}
 
@@ -191,5 +197,10 @@ public class StartPanel extends JPanel {
 			loadReplayDialog = new LoadReplayDialog(mainWindow, mainFrame);
 		}
 		loadReplayDialog.setVisible(true);
+	}
+	
+	protected void showLoadFromFileBrowser() {
+		//TODO: Actually add a file browser here.
+		startModel.loadDefaultDataSet();
 	}
 }
