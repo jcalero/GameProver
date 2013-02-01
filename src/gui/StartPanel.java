@@ -150,7 +150,7 @@ public class StartPanel extends JPanel {
 		quitButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				System.exit(0);
+				quitButtonClicked();
 			}
 		});
 	}
@@ -209,5 +209,9 @@ public class StartPanel extends JPanel {
 			File file = fileChooser.getSelectedFile(); 
 			startModel.loadDataSetFromFile(file);
 		}
+	}
+	
+	protected void quitButtonClicked() {
+		startModel.exitApplication();
 	}
 }

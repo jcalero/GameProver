@@ -5,6 +5,7 @@ package game;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.DefaultListModel;
@@ -48,6 +49,15 @@ public class StartModel {
 			proofListModel.addElement(e);
 		}
 		return proofListModel;
+	}
+	
+	public void exitApplication() {
+		try {
+			saveManager.saveAutoSaveFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.exit(0);
 	}
 
 }
