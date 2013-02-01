@@ -71,7 +71,6 @@ public class Game {
 
 	// TODO: Move this to
 	public void updateFrame() {
-		System.out.println("Updating frame (" + currentDisplayPanel);
 		if (currentDisplayPanel != null) {
 			currentDisplayPanel.update();
 

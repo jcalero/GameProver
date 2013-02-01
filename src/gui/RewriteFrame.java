@@ -1,7 +1,5 @@
 package gui;
 
-import game.Game;
-
 import java.awt.Color;
 
 import javax.swing.JButton;
@@ -11,13 +9,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import parser.MyExpressionParser;
-
 import logic.Expression;
 import logic.LogicStep;
 import logic.ProofState;
 import logic.Rule;
 import logic.StepManager;
+import parser.MyExpressionParser;
 
 public class RewriteFrame extends JDialog {
 	
@@ -138,7 +135,6 @@ public class RewriteFrame extends JDialog {
 			
 			Expression rewrittenExp = origExp.clonexp();
 			
-			System.out.println("game: " + gamePanel.getGame());
 			StepManager stepManager = new StepManager(gamePanel.getGame());
 			
 			Rule rule = null;
@@ -174,7 +170,7 @@ public class RewriteFrame extends JDialog {
 		origExp = new Expression();
 //		selectedExp.removeAll();
 //		dispExp.setmyEpanel(origExp, this, "up");
-		settextstr("N/A");
+		settextstr("");
 		select = false;
 		selectedtar = false;
 //		btnselect.setEnabled(false);

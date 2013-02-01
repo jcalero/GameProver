@@ -218,11 +218,9 @@ public class myEpanel extends JPanel implements MouseListener {
 	public void mouseClicked(MouseEvent n) {
 		JLabel clicked = (JLabel) n.getSource();
 		this.reset();
-		System.out.println(RWExpressions.values());
 		if (RWExpressions.containsKey(clicked)) {
 			this.chosen = true;
 			target = this.origExp;
-			System.out.println("target: " + target);
 			parent.settextstr(target.toString());
 			parent.selectedtar = true;
 			if (this.getType().equals("up")) {

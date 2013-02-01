@@ -1070,7 +1070,6 @@ public class ProofStatePanel extends JPanel implements MouseListener,
 			ls.setNewExpression(newExp);
 			ls.setBubbleContext(bubbleContext);
 			ls.setInductVariable(inductVariable);
-			System.out.println("Rule = " + rule.toString());
 			stepManager.applyRule(ls);
 			parent.play(kick);
 			parent.updateFrame();

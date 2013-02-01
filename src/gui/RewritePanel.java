@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -11,13 +12,11 @@ import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
-import java.awt.Dimension;
 
 public class RewritePanel extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -32,6 +31,13 @@ public class RewritePanel extends JPanel {
 	 */
 	public RewritePanel(RewriteFrame frame) {
 		this.frame = frame;
+		ActionListener finishListener = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				finishAction();
+			}
+		};
+		
 		setBorder(new LineBorder(new Color(0, 0, 0)));
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] { 0, 0, 0, 0, 0 };
@@ -150,6 +156,7 @@ public class RewritePanel extends JPanel {
 		gbc_rewriteTextField.gridy = 1;
 		rewriteToPanel.add(rewriteTextField, gbc_rewriteTextField);
 		rewriteTextField.setColumns(15);
+		rewriteTextField.addActionListener(finishListener);
 
 		JPanel buttonPanel = new JPanel();
 		GridBagConstraints gbc_buttonPanel = new GridBagConstraints();
@@ -184,11 +191,7 @@ public class RewritePanel extends JPanel {
 		buttonPanel.add(matchButton, gbc_matchButton);
 
 		JButton finishButton = new JButton("Finish!");
-		finishButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				finishAction();
-			}
-		});
+		finishButton.addActionListener(finishListener);
 		finishButton.setFont(new Font("Tahoma", Font.BOLD, 12));
 		GridBagConstraints gbc_finishButton = new GridBagConstraints();
 		gbc_finishButton.insets = new Insets(0, 0, 0, 5);
@@ -207,7 +210,8 @@ public class RewritePanel extends JPanel {
 		gbc_cancelButton.gridx = 5;
 		gbc_cancelButton.gridy = 1;
 		buttonPanel.add(cancelButton, gbc_cancelButton);
-
+		
+		frame.getRootPane().setDefaultButton(finishButton);
 	}
 
 	private void cancelAction() {
