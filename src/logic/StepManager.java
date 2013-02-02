@@ -12,8 +12,6 @@
 package logic;
 
 import game.Game;
-import game.IPlayable;
-import game.Replay;
 
 public class StepManager {
 
