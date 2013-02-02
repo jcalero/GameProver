@@ -166,6 +166,10 @@ public class Game {
 		return saveManager;
 	}
 	
+	public GamePanel getGamePanel() {
+		return gamePanel;
+	}
+	
 	public Expression getTheorem() {
 		return theorem;
 	}

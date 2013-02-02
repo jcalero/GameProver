@@ -28,6 +28,7 @@ public class SpecialiseDialog extends JDialog {
 	private Expression exp;
 	private JLabel lblOrigExp;
 	private ProofStatePanel panelToAddTo;
+
 	/**
 	 * Create the dialog.
 	 */
@@ -36,7 +37,6 @@ public class SpecialiseDialog extends JDialog {
 		origExp = new Expression();
 		setTitle("Please specialise the theorem...");
 		setBounds(100, 100, 450, 300);
-		setLocationRelativeTo(null);
 		getContentPane().setLayout(new BorderLayout());
 		pnlSpecialise.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -85,27 +85,29 @@ public class SpecialiseDialog extends JDialog {
 		origExp = e;
 		lblOrigExp.setText(exp.toString());
 
-		ArrayList<String> expVars = exp.getTermVars();
+		ArrayList<String> expVars = exp.getExpressionAsList();
 		ArrayList<String> expVarsNoDup = new ArrayList<String>();
 		Iterator<String> expVarsIt = expVars.iterator();
+		System.out.println("expVars = " + expVars);
 
-		//remove duplicates
+		// remove duplicates
 		for (int i = 0; i < expVars.size(); i++) {
 			String str = expVars.get(i);
-			if (!expVarsNoDup.contains(str))
+			if (!expVarsNoDup.contains(str) && str.contains("?"))
 				expVarsNoDup.add(str);
 		}
+		System.out.println("expVarsNoDup = " + expVarsNoDup);
 
 		expVarsIt = expVarsNoDup.iterator();
-		while (expVarsIt.hasNext()) {	
+		while (expVarsIt.hasNext()) {
 
 			final String var = expVarsIt.next();
-			JLabel lblVar= new JLabel("'" + var + "' turns into");
+			JLabel lblVar = new JLabel("'" + var + "' turns into");
 
 			JTextField txtNewVar = new JTextField();
 			txtNewVar.setColumns(10);
 			txtNewVar.putClientProperty("original_variable", var);
-            //txtNewVar.setText(var);
+			// txtNewVar.setText(var);
 			JPanel varPanel = new JPanel();
 			varPanel.add(lblVar);
 			varPanel.add(txtNewVar);
@@ -116,31 +118,43 @@ public class SpecialiseDialog extends JDialog {
 	public SpecialiseDialog(Expression e, ProofStatePanel ps) {
 		this(e);
 		panelToAddTo = ps;
+		// TODO: Fix this. Game.getGamePanel() should not exist. ProofStatePanel
+		// should know of the gamePanel but can't edit ProofStatePanel at the
+		// moment.
+		setLocationRelativeTo(panelToAddTo.parent.getGamePanel());
 	}
 
 	public void subVars() {
-		HashMap<String, String> hm = new HashMap <String, String>();
+		HashMap<String, String> hm = new HashMap<String, String>();
 
-		JPanel specialise = (JPanel)getContentPane().getComponent(0);
+		JPanel specialise = (JPanel) getContentPane().getComponent(0);
 		Component[] comps = specialise.getComponents();
 
 		for (int i = 1; i < comps.length; i++) {
-			JPanel var = (JPanel)comps[i];
+			JPanel var = (JPanel) comps[i];
 			if (var.getComponent(1) instanceof JTextField) {
 				JTextField tf = (JTextField) var.getComponent(1);
 				if (!tf.getText().isEmpty()) {
-					hm.put((String)tf.getClientProperty("original_variable"), tf.getText());
+					hm.put((String) tf.getClientProperty("original_variable"),
+							tf.getText());
 				}
 			}
 		}
 
-		exp = Expression.replaceAll(hm.keySet().toArray(), hm.values().toArray(), origExp);
+		exp = Expression.replaceAll(hm.keySet().toArray(), hm.values()
+				.toArray(), origExp);
 	}
 
 	public void okHandler() {
-//		panelToAddTo.parent.throwIn.setVisible(false);
+		// panelToAddTo.parent.throwIn.setVisible(false);
 		subVars();
-		panelToAddTo.logicState.addAssum(exp);
+
+		if (exp.toString().contains("?")) {
+			panelToAddTo.logicState.addAssumVar(exp);
+		} else {
+			panelToAddTo.logicState.addAssum(exp);
+		}
+		panelToAddTo.logicState.removeAssumVar(origExp);
 		panelToAddTo.parent.updateFrame();
 		dispose();
 	}
