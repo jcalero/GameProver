@@ -14,6 +14,7 @@ import javax.swing.ToolTipManager;
 
 import logic.Expression;
 import logic.ProofState;
+import logic.SavedProof;
 
 /**
  * @author Jakob Calero
@@ -102,9 +103,14 @@ public class MainWindow {
 		mainFrame.validate();
 	}
 	
-	public void loadReplayPanel(String proofString) {
-		ReplayPanel rp  = new ReplayPanel(this, proofString);
-		mainFrame.setContentPane(rp);
+	public void loadReplayPanel(SavedProof savedProof) {		
+		ReplayPanel replayPanel = new ReplayPanel(this, savedProof);
+		
+		Game game = new Game(replayPanel, savedProof, saveManager);
+		replayPanel.setGame(game);
+		replayPanel.loadAxioms();
+
+		mainFrame.setContentPane(replayPanel);
 		mainFrame.validate();
 	}
 }

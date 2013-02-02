@@ -18,6 +18,7 @@ import javax.swing.JScrollPane;
 import logic.Expression;
 import logic.GameState;
 import logic.ProofState;
+import logic.ReplayManager;
 import logic.SavedProof;
 import logic.StepManager;
 
@@ -30,6 +31,7 @@ public class Game {
 	private StepManager stepManager;
 	private Expression theorem;
 	private SaveManager saveManager;
+	private ReplayManager replayManager;
 
 	private boolean isReplaying;
 
@@ -53,13 +55,29 @@ public class Game {
 		initialiseGoal(theorem);
 	}
 
-	public Game(ReplayPanel replayPanel) {
+	public Game(ReplayPanel replayPanel, SavedProof savedProof, SaveManager saveManager) {
+		Expression exp = savedProof.getExpression();
+		this.proofState = new ProofState(exp);
 		this.replayPanel = replayPanel;
+		this.theorem = proofState.getGoal(0);
+		this.saveManager = saveManager;
+		
+		this.replayManager = new ReplayManager(this);;
+		
+		initialiseReplay(savedProof);
 	}
 
 	// TODO: Move this to GamePanel and fetch game list from
 	// "Game" specific object.
 	public void updateUndoButton() {
+		if (gamePanel == null && replayPanel != null) {
+			if (getGameList().size() > 1) {
+				replayPanel.setPrevButtonState(true);
+			} else {
+				replayPanel.setPrevButtonState(false);
+			}
+			return;
+		}
 		if (getGameList().size() > 1) {
 			gamePanel.setUndoText("Undo (" + (getGameList().size() - 1) + ")");
 			gamePanel.setUndoButtonState(true);
@@ -71,6 +89,10 @@ public class Game {
 
 	// TODO: Move this to
 	public void updateFrame() {
+		if (gamePanel == null) {
+			updateReplayFrame();
+			return;
+		}
 		if (currentDisplayPanel != null) {
 			currentDisplayPanel.update();
 
@@ -91,6 +113,29 @@ public class Game {
 		if (gameList.size() <= 1) {
 			gamePanel.setUndoText("Undo");
 			gamePanel.setUndoButtonState(false);
+		}
+	}
+	
+	public void updateReplayFrame() {
+		if (currentDisplayPanel != null) {
+			currentDisplayPanel.update();
+
+			JScrollPane proofArea = replayPanel.getProofScrollPane();
+
+			// Resize and repaint
+			int s = currentDisplayPanel.getHeight();
+			currentDisplayPanel.setPreferredSize(new Dimension(proofArea
+					.getWidth(), s + 10));
+			currentDisplayPanel.revalidate();
+			replayPanel.repaint(); // (Not needed???)
+		}
+
+		// Check whether proof is finished
+		if (isDone()) {
+			doneReplayBehaviour();
+		}
+		if (gameList.size() <= 1) {
+			replayPanel.setPrevButtonState(false);
 		}
 	}
 
@@ -131,6 +176,10 @@ public class Game {
 
 	// TODO: Make references to this point to GamePanel instead.
 	public void setHelptxt(String text) {
+		if (gamePanel == null) {
+			replayPanel.setHelpText(text);
+			return;
+		}
 		gamePanel.setHelpText(text);
 	}
 
@@ -156,6 +205,12 @@ public class Game {
 		cleanup();
 		currentDisplayPanel.record();
 		updateFrame();
+	}
+	
+	public void cleanupReplayHandler() {
+		cleanupReplay();
+		currentDisplayPanel.record();
+		updateReplayFrame();
 	}
 	
 	public void cleanup() {
@@ -189,7 +244,38 @@ public class Game {
 			}
 		}
 	}
+	
+	public void cleanupReplay() {
+		ProofStatePanel panel = currentDisplayPanel;
+		ProofState proofState = panel.logicState;
+		int subStateToShowIndex = -1;
+		boolean doCleanup = false;
+		if (proofState.isEmptyState()) {
+			wasCleanup = true;
+			doCleanup = true;
+			proofState.setHideFlag(true);
+		}
 
+		for (int i = 0; i < proofState.getSubstates().size(); i++) {
+			ProofState subState = proofState.getSubstate(i);
+			boolean oldSubStateFlag = subState.getHideFlag();
+			subState.cleanup();
+			if (subState.getHideFlag() && !oldSubStateFlag) {
+				doCleanup = true;
+			}
+			if (!subState.getHideFlag() && subStateToShowIndex == -1) {
+				subStateToShowIndex = i;
+			}
+		}
+
+		if (doCleanup) {
+			if (subStateToShowIndex == -1) {
+				setReplayStateToShow(proofState);
+			} else {
+				setReplayStateToShow(proofState.getSubstate(subStateToShowIndex));
+			}
+		}
+	}
 
 	// TODO: Move this to "Game" specific object.
 	public void doneBehaviour() {
@@ -207,6 +293,15 @@ public class Game {
 		// scrollPanel.setViewportView(done);
 		gamePanel.loadDonePanel();
 	}
+	// TODO: Move this to "Replay" specific object.
+	public void doneReplayBehaviour() {
+		gameList.clear();
+		// play(win);
+		setReplaying(false);
+		
+		replayPanel.doneReplaying();
+	}
+	
 
 	// TODO: Move this to main Window?? Or keep here.
 	public void play(URL sound) {
@@ -214,44 +309,12 @@ public class Game {
 	}
 
 	public void initialiseGoal(Expression newGoal) {
-		// rwframe.restart();
-
-		// if (done != null && done.getParent() != null) {
-		// remove(done);
-		// }
-
-		// ArrayList<Expression> goals = new ArrayList<Expression>();
-		// String s;
-		// if (newGoal == null) {
-		// s = (String) JOptionPane.showInputDialog(this,
-		// "Please input formula:", "Set Goal",
-		// JOptionPane.PLAIN_MESSAGE, null, null, prevTheorem);
-		//
-		// if (s == null)
-		// return;
-		//
-		// try {
-		// goals.add(MyExpressionParser.parse(s));
-		// } catch (Exception e) {
-		// e.printStackTrace();
-		// }
-		// toProve = goals.get(0);
-		// } else {
-		// goals.add(newGoal);
-		// s = newGoal.toString();
-		// toProve = newGoal;
-		// }
 		gamePanel.setUndoButtonState(false);
 		gamePanel.setUndoText("Undo");
 
-		// prevTheorem = s;
-
-		// ProofState state = new ProofState();
-		// proofState.setGoals(goals);
 		proofState.getProofStateList().clear();
 		proofState.getProofStateList().add(proofState);
-
-		// rwframe.setdisptext(s);
+		
 		gameList.clear();
 		setStateToShow(proofState);
 
@@ -263,11 +326,30 @@ public class Game {
 		stepManager = new StepManager(this);
 		stepManager.start(proofState.getGoal(0));
 		
-		//gamePanel.loadAxioms();
-
-		// btnRepo.setEnabled(true);
-		// btnReplay.setEnabled(true);
 		updateFrame();
+	}
+	
+	public void initialiseReplay(SavedProof savedProof) {
+		
+		proofState.getProofStateList().clear();
+		proofState.getProofStateList().add(proofState);
+		
+		gameList.clear();
+		setReplayStateToShow(proofState);
+
+		GameState gameState = new GameState();
+		gameState.setProofStateList(proofState.getProofStateList());
+		gameState.setDisplayStateIndex(proofState.getDepth());
+		gameList.add(gameState);
+
+		stepManager = new StepManager(this);
+		stepManager.start(proofState.getGoal(0));
+		
+		replayManager.load(savedProof);
+		
+		setReplaying(true);
+		
+		updateReplayFrame();
 	}
 
 	public void setStateToShow(ProofState pf) {
@@ -289,14 +371,45 @@ public class Game {
 		gamePanel.validate();
 	}
 	
+	public void setReplayStateToShow(ProofState pf) {
+		replayPanel.invalidate();
+
+		if (currentDisplayPanel != null) {
+			replayPanel.remove(currentDisplayPanel);
+		}
+
+		ProofStatePanel pfPanel = new ProofStatePanel(this, pf);
+		JScrollPane scrollPanel = replayPanel.getProofScrollPane();
+		scrollPanel.setViewportView(pfPanel);
+
+		int s = pfPanel.getHeight();
+		pfPanel.setPreferredSize(new Dimension(scrollPanel.getWidth(), s));
+		currentDisplayPanel = pfPanel;
+		replayPanel.repaint();
+
+		replayPanel.validate();
+	}
+	
 	public void undoFrame() {
 		System.out.println("[UNDO]: Starting undo");
 		setStateToShow(currentDisplayPanel.undo());
 		if (!wasCleanup)
 			stepManager.undo();
-//		if (isReplaying() && replayManager != null) {
-//			replayManager.prev();
-//		}
+		if (isReplaying() && replayManager != null) {
+			replayManager.prev();
+		}
+		wasCleanup = false;
+		System.out.println("[UNDO]: Undo finished");
+	}
+	
+	public void undoReplayFrame() {
+		System.out.println("[UNDO]: Starting undo");
+		setReplayStateToShow(currentDisplayPanel.undo());
+		if (!wasCleanup)
+			stepManager.undo();
+		if (isReplaying() && replayManager != null) {
+			replayManager.prev();
+		}
 		wasCleanup = false;
 		System.out.println("[UNDO]: Undo finished");
 	}
@@ -340,16 +453,20 @@ public class Game {
 	public String[] getBaseAxioms() {
 		return saveManager.getAxioms();
 	}
+
+	public boolean getWasCleanup() {
+		return wasCleanup;
+	}
 	
-//	public void addUserAxiom(Expression exp) {
-//		userAxioms.add(exp);
-//	}
-//	
-//	public void removeUserAxiom(Expression exp) {
-//		userAxioms.remove(exp);
-//	}
-//	
-//	public ArrayList<Expression> getUserAxioms() {
-//		return userAxioms;
-//	}
+	public void setWasCleanup(boolean state) {
+		wasCleanup = state;
+	}
+	
+	public void replayNext() {
+		replayManager.next();
+	}
+	
+	public void replayPrev() {
+		undoReplayFrame();
+	}
 }

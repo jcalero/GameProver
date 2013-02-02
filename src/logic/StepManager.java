@@ -12,6 +12,8 @@
 package logic;
 
 import game.Game;
+import game.IPlayable;
+import game.Replay;
 
 public class StepManager {
 
@@ -350,7 +352,7 @@ public class StepManager {
 	 */
 	private void record(LogicStep step) {
 		proof.add(step);
-		window.wasCleanup = false;
+		window.setWasCleanup(false);
 		System.out.println("[RECORDING]: (" + proof.size() + ") Added step: "
 				+ step);
 	}

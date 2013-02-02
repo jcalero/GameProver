@@ -198,7 +198,7 @@ public class StartPanel extends JPanel {
 
 	protected void showReplayBrowser() {
 		if (loadReplayDialog == null) {
-			loadReplayDialog = new LoadReplayDialog(mainWindow, mainFrame);
+			loadReplayDialog = new LoadReplayDialog(mainWindow, mainFrame, startModel);
 		}
 		loadReplayDialog.setVisible(true);
 	}
